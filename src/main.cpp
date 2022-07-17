@@ -1,4 +1,4 @@
-#include "chessgame.hpp"
+#include "Game.h"
 
 int main(int argc, char *argv[]) {
 	ChessGame cg(argc, argv);

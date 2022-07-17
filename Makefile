@@ -1,7 +1,33 @@
-CXX=g++
+CXX = g++
+CC = gcc
 
-main:
-	$(CXX) -Og -o chess src/main.cpp -std=c++17 -Ilibs/include -Llibs/lib -lmingw32 -lSDL2main -lSDL2 -lSDL2_image
+SRC_DIR := src
 
-run: main
-	./chess.exe
+OBJ_DIR := obj
+SRC_FILES := $(wildcard $(SRC_DIR)/*.cpp)
+OBJ_FILES := $(patsubst $(SRC_DIR)/%.cpp,$(OBJ_DIR)/%.o,$(SRC_FILES))
+
+CXXFLAGS := -Og
+LDFLAGS :=
+LIBS := -lmingw32 -lSDL2main -lSDL2 -lSDL2_image
+
+
+
+build\chess.exe: $(OBJ_FILES)
+	$(CXX) $(LDFLAGS) -o $@ $^ $(LIBS)
+
+$(OBJ_DIR)/%.o: $(SRC_DIR)/%.c
+	$(CC) $(CPPFLAGS) $(CXXFLAGS) -c -o $@ $<
+
+$(OBJ_DIR)/%.o: $(SRC_DIR)/%.cpp
+	$(CXX) $(CPPFLAGS) $(CXXFLAGS) -c -o $@ $<
+
+
+run: build\chess.exe
+	.\build\chess.exe
+
+do: build\chess.exe run
+
+clean:
+	@rm -rf obj/*.o
+	@rm -rf build/*.exe
