@@ -37,6 +37,9 @@ private:
 	void setup();
 	
 	void load_piece_textures();
+	void poll_events();
+	
+	void update(float dt);
 
 	void draw_board();
 	void draw_pieces();

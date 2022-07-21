@@ -26,7 +26,6 @@ void ChessGame::setup()
 		window_height, 
 		0
 	);
-
 	if (!main_window)
 		throw std::runtime_error("Game window could not be created.");
 
@@ -70,7 +69,6 @@ void ChessGame::draw_board()
 				x * tile_width, y * tile_height, 
 				tile_width, tile_height
 			);
-
 
 			// draw checkerboard pattern
 			if ((x % 2 == 0) ^ (y % 2 == 0))
@@ -121,10 +119,37 @@ void ChessGame::draw_pieces()
 	}
 }
 
+void ChessGame::poll_events()
+{
+	SDL_Event e;
+	while (SDL_PollEvent(&e)) {
+		switch (e.type) {
+			case SDL_QUIT: {
+				running = false;
+				break;
+			}
+			case SDL_MOUSEBUTTONUP: {
+				printf("mouse released!\n");
+				break;
+			}
+		}
+	}
+}
+
+void ChessGame::update(float dt)
+{
+	poll_events();
+}
+
 void ChessGame::draw()
 {
+	SDL_SetRenderDrawColor(main_renderer, 255, 255, 255, 255);
+	SDL_RenderClear(main_renderer);
+
 	draw_board();
 	draw_pieces();
+
+	SDL_RenderPresent(main_renderer);
 }
 
 void ChessGame::unload_piece_textures()
@@ -153,27 +178,10 @@ void ChessGame::run() {
 
 	running = true;
 
+	float dt = 0.0;
 	while (running) {
-		SDL_Event e;
-		while (SDL_PollEvent(&e)) {
-			switch (e.type) {
-				case SDL_QUIT: {
-					running = false;
-					break;
-				}
-				case SDL_MOUSEBUTTONUP: {
-					printf("mouse released!\n");
-					break;
-				}
-			}
-		}
-		SDL_SetRenderDrawColor(main_renderer, 255, 255, 255, 255);
-		SDL_RenderClear(main_renderer);
-		
+		update(dt);		
 		draw();
-
-		SDL_RenderPresent(main_renderer);
-
 		SDL_Delay(1000.f / target_fps);
 	}
 	cleanup();

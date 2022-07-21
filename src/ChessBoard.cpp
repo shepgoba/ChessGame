@@ -10,7 +10,6 @@ bool ChessBoard::MovePiece(ChessPieceLocation from, ChessPieceLocation to)
 
 	board[to.y][to.x] = pieceFrom;
 	board[from.y][from.x] = ChessPiece(PlayerNone, PieceTypeNone);
-	
 	return true;
 }
 
