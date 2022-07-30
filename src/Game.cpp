@@ -1,6 +1,6 @@
 #include "Game.h"
 
-static SDL_Rect SDLRectMake(unsigned int x, unsigned int y, unsigned int w, unsigned int h) {
+static inline SDL_Rect SDLRectMake(unsigned x, unsigned y, unsigned w, unsigned h) {
 	SDL_Rect r;
 	r.x = x;
 	r.y = y;
@@ -15,9 +15,17 @@ static std::string GetAssetPath(const char *in)
 	return std::string("assets/") + in;
 }
 
+ChessGame::ChessGame(int argc, char *argv[]) {
+	for (int i = 0; i < argc; i++) {
+		auto str = std::string(argv[i]);
+		args.push_back(str);
+	}
+}
+
 void ChessGame::setup()
 {
-	setvbuf(stdout, NULL, _IONBF, 0); 
+	SDL_Init(SDL_INIT_VIDEO);
+	IMG_Init(IMG_INIT_PNG);
 
 	main_window = SDL_CreateWindow("Chess(tm)",
 		SDL_WINDOWPOS_UNDEFINED, 
@@ -35,10 +43,10 @@ void ChessGame::setup()
 
 	SDL_SetRenderDrawBlendMode(main_renderer, SDL_BLENDMODE_BLEND);
 
-	load_piece_textures();
+	load_piece_textures(piece_textures);
 }
 
-void ChessGame::load_piece_textures()
+void ChessGame::load_piece_textures(std::array<SDL_Texture *, 12> &texts)
 {
 	const std::array<const char *, 12> urls = {
 		"PawnW.png", "RookW.png",
@@ -56,8 +64,8 @@ void ChessGame::load_piece_textures()
 		SDL_Texture *texture = IMG_LoadTexture(main_renderer, assetPath.c_str());
 		if (!texture)
 			throw std::runtime_error("Failed to load texture!");
-
-		piece_textures[i] = texture;
+			
+		texts[i] = texture;
 	}
 }
 
@@ -129,7 +137,6 @@ void ChessGame::poll_events()
 				break;
 			}
 			case SDL_MOUSEBUTTONUP: {
-				printf("mouse released!\n");
 				break;
 			}
 		}
@@ -164,13 +171,9 @@ void ChessGame::cleanup()
 	unload_piece_textures();
 	SDL_DestroyRenderer(main_renderer);
 	SDL_DestroyWindow(main_window);
-}
 
-ChessGame::ChessGame(int argc, char **argv) {
-	for (int i = 0; i < argc; i++) {
-		auto str = std::string(argv[i]);
-		args.push_back(str);
-	}
+	IMG_Quit();
+	SDL_Quit();
 }
 
 void ChessGame::run() {

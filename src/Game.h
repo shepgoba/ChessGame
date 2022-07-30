@@ -34,17 +34,20 @@ private:
 	std::array<SDL_Texture *, 12> piece_textures;
 	std::vector<std::string> args;
 
+	// Setup Functions
 	void setup();
-	
-	void load_piece_textures();
+	void load_piece_textures(std::array<SDL_Texture *, 12> &texts);
+
+	// Logic Functions
 	void poll_events();
-	
 	void update(float dt);
 
+	//Drawing functions
 	void draw_board();
 	void draw_pieces();
 	void draw();
 
+	// Cleanup Functions
 	void unload_piece_textures();
 	void cleanup();
 

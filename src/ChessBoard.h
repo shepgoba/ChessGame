@@ -2,6 +2,7 @@
 #define CHESSBOARD_INCLUDE_H
 #include "ChessPiece.h"
 #include <cassert>
+#include <cstddef>
 
 // Described with the top left tile as the origin,
 // and the x-axis increasing as it moves to the right,
@@ -18,8 +19,8 @@ struct ChessPieceLocation {
 
 class ChessBoard {
 private:
-	static constexpr unsigned int BOARD_WIDTH = 8;
-	static constexpr unsigned int BOARD_HEIGHT = 8;
+	static constexpr std::size_t BOARD_WIDTH = 8;
+	static constexpr std::size_t BOARD_HEIGHT = 8;
 
 	ChessPiece board[BOARD_WIDTH][BOARD_HEIGHT] = {
 		{
