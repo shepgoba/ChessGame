@@ -73,7 +73,7 @@ void ChessGame::draw_board()
 {
 	for (int y = 0; y < 8; y++) {
 		for (int x = 0; x < 8; x++) {
-			SDL_Rect tileRect = SDLRectMake(
+			const SDL_Rect tileRect = SDLRectMake(
 				x * tile_width, y * tile_height, 
 				tile_width, tile_height
 			);
@@ -93,7 +93,7 @@ void ChessGame::draw_pieces()
 {
 	for (int y = 0; y < board.GetHeight(); y++) {
 		for (int x = 0; x < board.GetWidth(); x++) {
-			ChessPieceLocation loc = ChessPieceLocation(x, y);
+			const ChessPieceLocation loc = ChessPieceLocation(x, y);
 			const ChessPiece &piece = board.GetPiece(loc);
 
 			const SDL_Rect draw_rect = SDLRectMake(x * tile_width, y * tile_height, tile_width, tile_height);
@@ -161,8 +161,9 @@ void ChessGame::draw()
 
 void ChessGame::unload_piece_textures()
 {
-	for (const auto &texture : piece_textures) {
+	for (SDL_Texture *&texture : piece_textures) {
 		SDL_DestroyTexture(texture);
+		texture = nullptr;
 	}
 }
 
@@ -183,7 +184,7 @@ void ChessGame::run() {
 
 	float dt = 0.0;
 	while (running) {
-		update(dt);		
+		update(dt);
 		draw();
 		SDL_Delay(1000.f / target_fps);
 	}
