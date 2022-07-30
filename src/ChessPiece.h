@@ -1,13 +1,14 @@
 #ifndef CHESSPIECE_INCLUDE_H
 #define CHESSPIECE_INCLUDE_H
+#include <cstddef>
 
-enum Player : unsigned int {
+enum Player : std::size_t {
 	PlayerWhite = 0,
 	PlayerBlack = 1,
 	PlayerNone = 2
 };
 
-enum PieceType : unsigned int {
+enum PieceType : std::size_t {
 	PieceTypePawn = 0,
 	PieceTypeRook = 1,
 	PieceTypeKnight = 2,
@@ -33,7 +34,7 @@ public:
 	}
 
 	bool IsValid() const {
-		return (this->owner != PlayerNone) && (this->type != PieceTypeNone);
+		return (owner != PlayerNone) && (type != PieceTypeNone);
 	}
 };
 

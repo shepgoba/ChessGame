@@ -31,7 +31,7 @@ private:
 	SDL_Renderer *main_renderer = nullptr;
 
 	ChessBoard board;
-	std::array<SDL_Texture *, 12> piece_textures;
+	std::array<SDL_Texture *, 12> piece_textures{};
 	std::vector<std::string> args;
 
 	// Setup Functions

@@ -57,7 +57,7 @@ void ChessGame::load_piece_textures(std::array<SDL_Texture *, 12> &texts)
 		"QueenB.png", "KingB.png"
 	};
 
-	for (int i = 0; i < urls.size(); i++) {
+	for (std::size_t i = 0; i < urls.size(); i++) {
 		const char *url = urls[i];
 		auto assetPath = GetAssetPath(url);
 
@@ -91,8 +91,8 @@ void ChessGame::draw_board()
 
 void ChessGame::draw_pieces()
 {
-	for (int y = 0; y < board.GetHeight(); y++) {
-		for (int x = 0; x < board.GetWidth(); x++) {
+	for (std::size_t y = 0; y < board.GetHeight(); y++) {
+		for (std::size_t x = 0; x < board.GetWidth(); x++) {
 			const ChessPieceLocation loc = ChessPieceLocation(x, y);
 			const ChessPiece &piece = board.GetPiece(loc);
 
@@ -100,14 +100,14 @@ void ChessGame::draw_pieces()
 			switch (piece.GetOwner()) {
 				case PlayerBlack: {
 					// add 6 because of how the pieces are laid out
-					unsigned int texture_offset = 6 + piece.GetType();
+					std::size_t texture_offset = 6 + piece.GetType();
 					assert(texture_offset <= 11);
 
 					SDL_RenderCopy(main_renderer, piece_textures[texture_offset], NULL, &draw_rect);
 					break;
 				}
 				case PlayerWhite: {
-					unsigned int texture_offset = piece.GetType();
+					std::size_t texture_offset = piece.GetType();
 					assert(texture_offset <= 5);
 
 					SDL_RenderCopy(main_renderer, piece_textures[texture_offset], NULL, &draw_rect);

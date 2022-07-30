@@ -8,12 +8,12 @@
 // and the x-axis increasing as it moves to the right,
 // and the y-axis increasing as it moves down
 struct ChessPieceLocation {
-	unsigned int x;
-	unsigned int y;
+	std::size_t x;
+	std::size_t y;
 
-	ChessPieceLocation(unsigned int x, unsigned int y) : x(x), y(y) {
-		assert(x >= 0 && x <= 7);
-		assert(y >= 0 && y <= 7);
+	ChessPieceLocation(std::size_t x, std::size_t y) : x(x), y(y) {
+		assert(x <= 7);
+		assert(y <= 7);
 	}
 };
 
@@ -108,8 +108,8 @@ public:
 	bool MovePiece(ChessPieceLocation from, ChessPieceLocation to);
 	const ChessPiece &GetPiece(ChessPieceLocation loc) const;
 
-	unsigned int GetWidth() const { return BOARD_WIDTH; }
-	unsigned int GetHeight() const { return BOARD_HEIGHT; }
+	std::size_t GetWidth() const { return BOARD_WIDTH; }
+	std::size_t GetHeight() const { return BOARD_HEIGHT; }
 };
 
 #endif // CHESSBOARD_INCLUDE_H
