@@ -1,9 +1,10 @@
 #include "ChessBoard.h"
 
+// Return true on success
 bool ChessBoard::MovePiece(ChessPieceLocation from, ChessPieceLocation to)
 {
-	ChessPiece &pieceFrom = board[from.y][from.x];
-	ChessPiece &pieceTo = board[to.y][to.x];
+	const ChessPiece &pieceFrom = board[from.y][from.x];
+	const ChessPiece &pieceTo = board[to.y][to.x];
 
 	if (!pieceFrom.IsValid())
 		return false;

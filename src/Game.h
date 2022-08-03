@@ -19,8 +19,8 @@ class ChessGame {
 private:
 	constexpr static float target_fps = 60.0;
 
-	constexpr static int window_width = 400;
-	constexpr static int window_height = 400;
+	constexpr static int window_width = 640;
+	constexpr static int window_height = 640;
 
 	constexpr static int tile_width = window_width / 8;
 	constexpr static int tile_height = window_height / 8;
@@ -35,6 +35,7 @@ private:
 	std::vector<std::string> args;
 
 	// Setup Functions
+	void setup_libraries();
 	void setup();
 	void load_piece_textures(std::array<SDL_Texture *, 12> &texts);
 
@@ -49,8 +50,8 @@ private:
 
 	// Cleanup Functions
 	void unload_piece_textures();
+	void cleanup_libraries();
 	void cleanup();
-
 public:
 	ChessGame(int argc, char *argv[]);
 	void run();

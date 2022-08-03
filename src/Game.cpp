@@ -22,10 +22,19 @@ ChessGame::ChessGame(int argc, char *argv[]) {
 	}
 }
 
+void ChessGame::setup_libraries()
+{
+	if (SDL_Init(SDL_INIT_VIDEO) < 0) {
+		throw std::runtime_error("SDL_Init failed");
+	}
+	if (IMG_Init(IMG_INIT_PNG) < 0) {
+		throw std::runtime_error("IMG_Init failed");
+	}
+}
+
 void ChessGame::setup()
 {
-	SDL_Init(SDL_INIT_VIDEO);
-	IMG_Init(IMG_INIT_PNG);
+	setup_libraries();
 
 	main_window = SDL_CreateWindow("Chess(tm)",
 		SDL_WINDOWPOS_UNDEFINED, 
@@ -167,14 +176,19 @@ void ChessGame::unload_piece_textures()
 	}
 }
 
+void ChessGame::cleanup_libraries()
+{
+	IMG_Quit();
+	SDL_Quit();
+}
+
 void ChessGame::cleanup()
 {
 	unload_piece_textures();
 	SDL_DestroyRenderer(main_renderer);
 	SDL_DestroyWindow(main_window);
 
-	IMG_Quit();
-	SDL_Quit();
+	cleanup_libraries();
 }
 
 void ChessGame::run() {
