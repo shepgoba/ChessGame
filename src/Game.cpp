@@ -235,7 +235,6 @@ void ChessGame::handle_click(const SDL_MouseButtonEvent &event)
 	if (event.button != SDL_BUTTON_LEFT)
 		return;
 
-
 	const int x = event.x;
 	const int y = event.y;
 
@@ -249,9 +248,7 @@ void ChessGame::handle_click(const SDL_MouseButtonEvent &event)
 		return;
  
 	const std::vector<ChessPieceLocation> moves = get_valid_moves(piece, loc);
-	for (const ChessPieceLocation &move : moves) {
-		board.MovePiece(loc, move);
-	}
+	board.MovePiece(loc, moves.back());
 }
 
 void ChessGame::poll_events()
