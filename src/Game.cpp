@@ -144,99 +144,122 @@ static int __white_y_offset_if_necessary(const ChessPiece &piece, int offset)
 	return offset;
 }
 
-std::vector<ChessPieceLocation> get_possible_pawn_moves(const ChessPiece &piece, const ChessPieceLocation &loc)
+void ChessGame::add_valid_pawn_moves(std::vector<ChessPieceLocation> &moves, const ChessPiece &piece, const ChessPieceLocation &loc)
 {
-	std::vector<ChessPieceLocation> valid_moves;
 
 	if (ChessPieceLocation::CanCreateLocation(loc.x, loc.y + __white_y_offset_if_necessary(piece, 1)))
-		valid_moves.push_back(ChessPieceLocation(loc.x, loc.y + __white_y_offset_if_necessary(piece, 1)));
+		moves.push_back(ChessPieceLocation(loc.x, loc.y + __white_y_offset_if_necessary(piece, 1)));
 
 	if (piece.GetMoveCount() == 0) {
 		if (ChessPieceLocation::CanCreateLocation(loc.x, loc.y + __white_y_offset_if_necessary(piece, 2)))
-			valid_moves.push_back(ChessPieceLocation(loc.x, loc.y + __white_y_offset_if_necessary(piece, 2)));
+			moves.push_back(ChessPieceLocation(loc.x, loc.y + __white_y_offset_if_necessary(piece, 2)));
+	}
+}
+
+void ChessGame::add_valid_rook_moves(std::vector<ChessPieceLocation> &moves, const ChessPiece &piece, const ChessPieceLocation &loc)
+{
+	for (auto x = loc.x + 1; x < board.GetWidth(); x++) {
+		ChessPieceLocation tmp_loc = ChessPieceLocation(x, loc.y);
+		const ChessPiece &piece = board.GetPiece(tmp_loc);
+		if (piece.IsValid())
+			break;
+		moves.push_back(tmp_loc);
 	}
 
-	return valid_moves;
+	for (int x = loc.x - 1; x >= 0; x--) {
+		ChessPieceLocation tmp_loc = ChessPieceLocation(x, loc.y);
+		const ChessPiece &piece = board.GetPiece(tmp_loc);
+		if (piece.IsValid())
+			break;
+		moves.push_back(tmp_loc);
+	}
+
+	for (auto y = loc.y + 1; y < board.GetHeight(); y++) {
+		ChessPieceLocation tmp_loc = ChessPieceLocation(loc.x, y);
+		const ChessPiece &piece = board.GetPiece(tmp_loc);
+		if (piece.IsValid())
+			break;
+		moves.push_back(tmp_loc);
+	}
+
+	for (int y = loc.y - 1; y >= 0; y--) {
+		ChessPieceLocation tmp_loc = ChessPieceLocation(loc.x, y);
+		const ChessPiece &piece = board.GetPiece(tmp_loc);
+		if (piece.IsValid())
+			break;
+		moves.push_back(tmp_loc);
+	}
 }
 
-std::vector<ChessPieceLocation> get_possible_rook_moves(const ChessPiece &piece, const ChessPieceLocation &loc)
+void ChessGame::add_valid_knight_moves(std::vector<ChessPieceLocation> &moves, const ChessPiece &piece, const ChessPieceLocation &loc)
 {
-	return {};
-}
-
-std::vector<ChessPieceLocation> get_possible_knight_moves(const ChessPiece &piece, const ChessPieceLocation &loc)
-{
-	std::vector<ChessPieceLocation> valid_moves;
-
 	if (ChessPieceLocation::CanCreateLocation(loc.x + 1, loc.y + __white_y_offset_if_necessary(piece, 2)))
-		valid_moves.push_back(ChessPieceLocation(loc.x + 1, loc.y + __white_y_offset_if_necessary(piece, 2)));
+		moves.push_back(ChessPieceLocation(loc.x + 1, loc.y + __white_y_offset_if_necessary(piece, 2)));
 
 	if (ChessPieceLocation::CanCreateLocation(loc.x + 1, loc.y + __white_y_offset_if_necessary(piece, -2)))
-		valid_moves.push_back(ChessPieceLocation(loc.x + 1, loc.y + __white_y_offset_if_necessary(piece, -2)));
+		moves.push_back(ChessPieceLocation(loc.x + 1, loc.y + __white_y_offset_if_necessary(piece, -2)));
 
 	if (ChessPieceLocation::CanCreateLocation(loc.x - 1, loc.y + __white_y_offset_if_necessary(piece, 2)))
-		valid_moves.push_back(ChessPieceLocation(loc.x - 1, loc.y + __white_y_offset_if_necessary(piece, 2)));
+		moves.push_back(ChessPieceLocation(loc.x - 1, loc.y + __white_y_offset_if_necessary(piece, 2)));
 
 	if (ChessPieceLocation::CanCreateLocation(loc.x - 1, loc.y + __white_y_offset_if_necessary(piece, -2)))
-		valid_moves.push_back(ChessPieceLocation(loc.x - 1, loc.y + __white_y_offset_if_necessary(piece, -2)));
+		moves.push_back(ChessPieceLocation(loc.x - 1, loc.y + __white_y_offset_if_necessary(piece, -2)));
 
 	if (ChessPieceLocation::CanCreateLocation(loc.x + 2, loc.y + __white_y_offset_if_necessary(piece, 1)))
-		valid_moves.push_back(ChessPieceLocation(loc.x + 2, loc.y + __white_y_offset_if_necessary(piece, 1)));
+		moves.push_back(ChessPieceLocation(loc.x + 2, loc.y + __white_y_offset_if_necessary(piece, 1)));
 
 	if (ChessPieceLocation::CanCreateLocation(loc.x + 2, loc.y + __white_y_offset_if_necessary(piece, -1)))
-		valid_moves.push_back(ChessPieceLocation(loc.x + 2, loc.y + __white_y_offset_if_necessary(piece, -1)));
+		moves.push_back(ChessPieceLocation(loc.x + 2, loc.y + __white_y_offset_if_necessary(piece, -1)));
 
 	if (ChessPieceLocation::CanCreateLocation(loc.x - 2, loc.y + __white_y_offset_if_necessary(piece, 1)))
-		valid_moves.push_back(ChessPieceLocation(loc.x - 2, loc.y + __white_y_offset_if_necessary(piece, 1)));
+		moves.push_back(ChessPieceLocation(loc.x - 2, loc.y + __white_y_offset_if_necessary(piece, 1)));
 
 	if (ChessPieceLocation::CanCreateLocation(loc.x - 2, loc.y + __white_y_offset_if_necessary(piece, -1)))
-		valid_moves.push_back(ChessPieceLocation(loc.x - 2, loc.y + __white_y_offset_if_necessary(piece, -1)));
-
-	return valid_moves;
+		moves.push_back(ChessPieceLocation(loc.x - 2, loc.y + __white_y_offset_if_necessary(piece, -1)));
 }
 
-std::vector<ChessPieceLocation> get_possible_bishop_moves(const ChessPiece &piece, const ChessPieceLocation &loc)
+void ChessGame::add_valid_bishop_moves(std::vector<ChessPieceLocation> &moves, const ChessPiece &piece, const ChessPieceLocation &loc)
 {
-	return {};
+
 }
 
-std::vector<ChessPieceLocation> get_possible_queen_moves(const ChessPiece &piece, const ChessPieceLocation &loc)
+void ChessGame::add_valid_queen_moves(std::vector<ChessPieceLocation> &moves, const ChessPiece &piece, const ChessPieceLocation &loc)
 {
-	return {};
+
 }
 
-std::vector<ChessPieceLocation> get_possible_king_moves(const ChessPiece &piece, const ChessPieceLocation &loc)
+void ChessGame::add_valid_king_moves(std::vector<ChessPieceLocation> &moves, const ChessPiece &piece, const ChessPieceLocation &loc)
 {
-	return {};
+
 }
 
 
-std::vector<ChessPieceLocation> ChessGame::get_possible_moves(const ChessPiece &piece, const ChessPieceLocation &loc)
+std::vector<ChessPieceLocation> ChessGame::get_valid_moves(const ChessPiece &piece, const ChessPieceLocation &loc)
 {
-	std::vector<ChessPieceLocation> valid_moves{};
+	std::vector<ChessPieceLocation> moves;
 	switch (piece.GetType()) {
 		case PieceTypePawn: {
-			valid_moves = get_possible_pawn_moves(piece, loc);
+			add_valid_pawn_moves(moves, piece, loc);
 			break;
 		}
 		case PieceTypeRook: {
-			valid_moves = get_possible_rook_moves(piece, loc);
+			add_valid_rook_moves(moves, piece, loc);
 			break;
 		}
 		case PieceTypeKnight: {
-			valid_moves = get_possible_knight_moves(piece, loc);
+			add_valid_knight_moves(moves, piece, loc);
 			break;
 		}
 		case PieceTypeBishop: {
-			valid_moves = get_possible_bishop_moves(piece, loc);
+			 add_valid_bishop_moves(moves, piece, loc);
 			break;
 		}
 		case PieceTypeQueen: {
-			valid_moves = get_possible_queen_moves(piece, loc);
+			add_valid_queen_moves(moves, piece, loc);
 			break;
 		}
 		case PieceTypeKing: {
-			valid_moves = get_possible_king_moves(piece, loc);
+			add_valid_king_moves(moves, piece, loc);
 			break;
 		}
 		default: {
@@ -245,7 +268,7 @@ std::vector<ChessPieceLocation> ChessGame::get_possible_moves(const ChessPiece &
 		}
 	}
 
-	return valid_moves;
+	return moves;
 }
 
 void ChessGame::handle_click(const SDL_MouseButtonEvent &event)
@@ -265,7 +288,7 @@ void ChessGame::handle_click(const SDL_MouseButtonEvent &event)
 	if (!piece.IsValid())
 		return;
  
-	const std::vector<ChessPieceLocation> moves = get_possible_moves(piece, loc);
+	const std::vector<ChessPieceLocation> moves = get_valid_moves(piece, loc);
 	if (moves.empty())
 		return;
 	board.MovePiece(loc, moves.front());

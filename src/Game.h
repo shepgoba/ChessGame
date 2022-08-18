@@ -44,8 +44,15 @@ private:
 	void update(float dt);
 	void handle_click(const SDL_MouseButtonEvent &event);
 
-	std::vector<ChessPieceLocation> get_possible_moves(const ChessPiece &piece, const ChessPieceLocation &loc);
+	std::vector<ChessPieceLocation> get_valid_moves(const ChessPiece &piece, const ChessPieceLocation &loc);
 
+	void add_valid_pawn_moves(std::vector<ChessPieceLocation> &moves, const ChessPiece &piece, const ChessPieceLocation &loc);
+	void add_valid_rook_moves(std::vector<ChessPieceLocation> &moves, const ChessPiece &piece, const ChessPieceLocation &loc);
+	void add_valid_knight_moves(std::vector<ChessPieceLocation> &moves, const ChessPiece &piece, const ChessPieceLocation &loc);
+	void add_valid_bishop_moves(std::vector<ChessPieceLocation> &moves, const ChessPiece &piece, const ChessPieceLocation &loc);
+	void add_valid_queen_moves(std::vector<ChessPieceLocation> &moves, const ChessPiece &piece, const ChessPieceLocation &loc);
+	void add_valid_king_moves(std::vector<ChessPieceLocation> &moves, const ChessPiece &piece, const ChessPieceLocation &loc);
+	
 	//Drawing functions
 	void draw_board();
 	void draw_pieces();
