@@ -146,7 +146,6 @@ static int __white_y_offset_if_necessary(const ChessPiece &piece, int offset)
 
 void ChessGame::add_valid_pawn_moves(std::vector<ChessPieceLocation> &moves, const ChessPiece &piece, const ChessPieceLocation &loc)
 {
-
 	if (ChessPieceLocation::CanCreateLocation(loc.x, loc.y + __white_y_offset_if_necessary(piece, 1)))
 		moves.push_back(ChessPieceLocation(loc.x, loc.y + __white_y_offset_if_necessary(piece, 1)));
 
@@ -228,9 +227,26 @@ void ChessGame::add_valid_queen_moves(std::vector<ChessPieceLocation> &moves, co
 
 }
 
+// Currently lets you overwrite your own pieces. TODO fix
 void ChessGame::add_valid_king_moves(std::vector<ChessPieceLocation> &moves, const ChessPiece &piece, const ChessPieceLocation &loc)
 {
+	if (ChessPieceLocation::CanCreateLocation(loc.x, loc.y + 1))
+		moves.push_back(ChessPieceLocation(loc.x, loc.y + 1));
+	if (ChessPieceLocation::CanCreateLocation(loc.x, loc.y - 1))
+		moves.push_back(ChessPieceLocation(loc.x, loc.y - 1));
+	if (ChessPieceLocation::CanCreateLocation(loc.x + 1, loc.y))
+		moves.push_back(ChessPieceLocation(loc.x + 1, loc.y));
+	if (ChessPieceLocation::CanCreateLocation(loc.x - 1, loc.y))
+		moves.push_back(ChessPieceLocation(loc.x - 1, loc.y));
 
+	if (ChessPieceLocation::CanCreateLocation(loc.x + 1, loc.y + 1))
+		moves.push_back(ChessPieceLocation(loc.x + 1, loc.y + 1));
+	if (ChessPieceLocation::CanCreateLocation(loc.x + 1, loc.y - 1))
+		moves.push_back(ChessPieceLocation(loc.x + 1, loc.y - 1));
+	if (ChessPieceLocation::CanCreateLocation(loc.x - 1, loc.y + 1))
+		moves.push_back(ChessPieceLocation(loc.x - 1, loc.y + 1));
+	if (ChessPieceLocation::CanCreateLocation(loc.x - 1, loc.y - 1))
+		moves.push_back(ChessPieceLocation(loc.x - 1, loc.y - 1));
 }
 
 
