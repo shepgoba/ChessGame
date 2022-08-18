@@ -44,7 +44,7 @@ private:
 	void update(float dt);
 	void handle_click(const SDL_MouseButtonEvent &event);
 
-	std::vector<ChessPieceLocation> get_valid_moves(const ChessPiece &piece, const ChessPieceLocation &loc);
+	std::vector<ChessPieceLocation> get_possible_moves(const ChessPiece &piece, const ChessPieceLocation &loc);
 
 	//Drawing functions
 	void draw_board();

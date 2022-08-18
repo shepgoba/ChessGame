@@ -3,6 +3,7 @@
 #include "ChessPiece.h"
 #include <cassert>
 #include <cstddef>
+#include <cstdio>
 
 // Described with the top left tile as the origin,
 // and the x-axis increasing as it moves to the right,
@@ -12,8 +13,7 @@ struct ChessPieceLocation {
 	std::size_t y;
 
 	ChessPieceLocation(std::size_t x, std::size_t y) : x(x), y(y) {
-		assert(x <= 7);
-		assert(y <= 7);
+		assert(CanCreateLocation(x, y));
 	}
 
 	ChessPieceLocation operator+(const ChessPieceLocation &other) const {
@@ -22,6 +22,10 @@ struct ChessPieceLocation {
 
 	ChessPieceLocation operator-(const ChessPieceLocation &other) const {
 		return ChessPieceLocation(x - other.x, y - other.y);
+	}
+	
+	constexpr static bool CanCreateLocation(std::size_t x, std::size_t y) {
+		return (x <= 7) && (y <= 7);
 	}
 };
 
