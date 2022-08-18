@@ -22,20 +22,18 @@ class ChessPiece {
 private:
 	Player owner;
 	PieceType type;
+
+	std::size_t moveCount;
 public:
-	ChessPiece(Player p, PieceType t) : owner(p), type(t) {}
+	ChessPiece(Player p, PieceType t);
 
-	Player GetOwner() const {
-		return owner;
-	}
+	Player GetOwner() const;
+	PieceType GetType() const;
 
-	PieceType GetType() const {
-		return type;
-	}
-
-	bool IsValid() const {
-		return (owner != PlayerNone) && (type != PieceTypeNone);
-	}
+	bool IsValid() const;
+	
+	void IncrementMoveCount();
+	std::size_t GetMoveCount() const;
 };
 
 #endif // CHESSPIECE_INCLUDE_H

@@ -136,6 +136,124 @@ void ChessGame::draw_pieces()
 	}
 }
 
+std::vector<ChessPieceLocation> get_valid_pawn_moves(const ChessPiece &piece, const ChessPieceLocation &loc)
+{
+	std::vector<ChessPieceLocation> valid_moves;
+
+	switch (piece.GetOwner()) {
+		case PlayerWhite: {
+			valid_moves.push_back(ChessPieceLocation(loc.x, loc.y - 1));
+			if (piece.GetMoveCount() == 0) {
+				valid_moves.push_back(ChessPieceLocation(loc.x, loc.y - 2));
+			}
+
+			break;
+		}
+		case PlayerBlack: {
+			valid_moves.push_back(ChessPieceLocation(loc.x, loc.y + 1));
+			if (piece.GetMoveCount() == 0) {
+				valid_moves.push_back(ChessPieceLocation(loc.x, loc.y + 2));
+			}
+			break;
+		}
+		default: {
+			throw std::runtime_error("Unknown player type!");
+			break;
+		}
+	}
+	
+
+	return valid_moves;
+}
+
+std::vector<ChessPieceLocation> get_valid_rook_moves(const ChessPiece &piece, const ChessPieceLocation &loc)
+{
+	return {};
+}
+
+std::vector<ChessPieceLocation> get_valid_knight_moves(const ChessPiece &piece, const ChessPieceLocation &loc)
+{
+	return {};
+}
+
+std::vector<ChessPieceLocation> get_valid_bishop_moves(const ChessPiece &piece, const ChessPieceLocation &loc)
+{
+	return {};
+}
+
+std::vector<ChessPieceLocation> get_valid_queen_moves(const ChessPiece &piece, const ChessPieceLocation &loc)
+{
+	return {};
+}
+
+std::vector<ChessPieceLocation> get_valid_king_moves(const ChessPiece &piece, const ChessPieceLocation &loc)
+{
+	return {};
+}
+
+
+
+std::vector<ChessPieceLocation> ChessGame::get_valid_moves(const ChessPiece &piece, const ChessPieceLocation &loc)
+{
+	std::vector<ChessPieceLocation> valid_moves{};
+	switch (piece.GetType()) {
+		case PieceTypePawn: {
+			valid_moves = get_valid_pawn_moves(piece, loc);
+			break;
+		}
+		case PieceTypeRook: {
+			valid_moves = get_valid_rook_moves(piece, loc);
+			break;
+		}
+		case PieceTypeKnight: {
+			valid_moves = get_valid_knight_moves(piece, loc);
+			break;
+		}
+		case PieceTypeBishop: {
+			valid_moves = get_valid_bishop_moves(piece, loc);
+			break;
+		}
+		case PieceTypeQueen: {
+			valid_moves = get_valid_queen_moves(piece, loc);
+			break;
+		}
+		case PieceTypeKing: {
+			valid_moves = get_valid_king_moves(piece, loc);
+			break;
+		}
+		default: {
+			throw std::runtime_error("Unknown piece type!");
+			break;
+		}
+	}
+
+	return valid_moves;
+}
+
+void ChessGame::handle_click(const SDL_MouseButtonEvent &event)
+{
+	if (event.button != SDL_BUTTON_LEFT)
+		return;
+
+
+	const int x = event.x;
+	const int y = event.y;
+
+	const std::size_t tile_x = x / tile_width;
+	const std::size_t tile_y = y / tile_height;
+
+	const ChessPieceLocation loc = ChessPieceLocation(tile_x, tile_y);
+	const ChessPiece &piece = board.GetPiece(loc);
+
+	if (!piece.IsValid())
+		return;
+ 
+	const std::vector<ChessPieceLocation> moves = get_valid_moves(piece, loc);
+	for (const ChessPieceLocation &move : moves) {
+		board.MovePiece(loc, move);
+	}
+}
+
 void ChessGame::poll_events()
 {
 	SDL_Event e;
@@ -146,6 +264,7 @@ void ChessGame::poll_events()
 				break;
 			}
 			case SDL_MOUSEBUTTONUP: {
+				handle_click(e.button);
 				break;
 			}
 		}

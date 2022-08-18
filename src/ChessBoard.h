@@ -15,6 +15,14 @@ struct ChessPieceLocation {
 		assert(x <= 7);
 		assert(y <= 7);
 	}
+
+	ChessPieceLocation operator+(const ChessPieceLocation &other) const {
+		return ChessPieceLocation(x + other.x, y + other.y);
+	}
+
+	ChessPieceLocation operator-(const ChessPieceLocation &other) const {
+		return ChessPieceLocation(x - other.x, y - other.y);
+	}
 };
 
 class ChessBoard {
