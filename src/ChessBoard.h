@@ -23,6 +23,10 @@ struct ChessPieceLocation {
 	ChessPieceLocation operator-(const ChessPieceLocation &other) const {
 		return ChessPieceLocation(x - other.x, y - other.y);
 	}
+
+	bool operator==(const ChessPieceLocation &other) const {
+		return (x == other.x) && (y == other.y);
+	}
 	
 	constexpr static bool CanCreateLocation(std::size_t x, std::size_t y) {
 		return (x <= 7) && (y <= 7);

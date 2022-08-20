@@ -15,10 +15,10 @@ static std::string GetAssetPath(const char *in)
 	return std::string("assets/") + in;
 }
 
-ChessGame::ChessGame(int argc, char *argv[]) {
+ChessGame::ChessGame(int argc, char *argv[]) : selected_piece_location(0, 0) {
 	for (int i = 0; i < argc; i++) {
 		auto str = std::string(argv[i]);
-		args.push_back(str);
+		m_args.push_back(str);
 	}
 }
 
@@ -36,23 +36,23 @@ void ChessGame::setup()
 {
 	setup_libraries();
 
-	main_window = SDL_CreateWindow("Chess(tm)",
+	m_main_window = SDL_CreateWindow("Chess(tm)",
 		SDL_WINDOWPOS_UNDEFINED, 
 		SDL_WINDOWPOS_UNDEFINED, 
 		window_width, 
 		window_height, 
 		0
 	);
-	if (!main_window)
+	if (!m_main_window)
 		throw std::runtime_error("Game window could not be created.");
 
-	main_renderer = SDL_CreateRenderer(main_window, -1, SDL_RENDERER_ACCELERATED);
-	if (!main_renderer)
+	m_main_renderer = SDL_CreateRenderer(m_main_window, -1, SDL_RENDERER_ACCELERATED);
+	if (!m_main_renderer)
 		throw std::runtime_error("Game renderer could not be created.");
 
-	SDL_SetRenderDrawBlendMode(main_renderer, SDL_BLENDMODE_BLEND);
+	SDL_SetRenderDrawBlendMode(m_main_renderer, SDL_BLENDMODE_BLEND);
 
-	load_piece_textures(piece_textures);
+	load_piece_textures(m_piece_textures);
 }
 
 void ChessGame::load_piece_textures(std::array<SDL_Texture *, 12> &texts)
@@ -70,7 +70,7 @@ void ChessGame::load_piece_textures(std::array<SDL_Texture *, 12> &texts)
 		const char *url = urls[i];
 		auto assetPath = GetAssetPath(url);
 
-		SDL_Texture *texture = IMG_LoadTexture(main_renderer, assetPath.c_str());
+		SDL_Texture *texture = IMG_LoadTexture(m_main_renderer, assetPath.c_str());
 		if (!texture)
 			throw std::runtime_error("Failed to load texture!");
 			
@@ -80,8 +80,8 @@ void ChessGame::load_piece_textures(std::array<SDL_Texture *, 12> &texts)
 
 void ChessGame::draw_board()
 {
-	for (std::size_t y = 0; y < board.GetHeight(); y++) {
-		for (std::size_t x = 0; x < board.GetWidth(); x++) {
+	for (std::size_t y = 0; y < m_board.GetHeight(); y++) {
+		for (std::size_t x = 0; x < m_board.GetWidth(); x++) {
 			const SDL_Rect tileRect = SDLRectMake(
 				x * tile_width, y * tile_height, 
 				tile_width, tile_height
@@ -89,21 +89,21 @@ void ChessGame::draw_board()
 
 			// draw checkerboard pattern
 			if ((x % 2 == 0) ^ (y % 2 == 0))
-				SDL_SetRenderDrawColor(main_renderer, 92, 76, 56, 255);
+				SDL_SetRenderDrawColor(m_main_renderer, 92, 76, 56, 255);
 			else
-				SDL_SetRenderDrawColor(main_renderer, 224, 195, 157, 255);
+				SDL_SetRenderDrawColor(m_main_renderer, 224, 195, 157, 255);
 
-			SDL_RenderFillRect(main_renderer, &tileRect);
+			SDL_RenderFillRect(m_main_renderer, &tileRect);
 		}
 	}
 }
 
 void ChessGame::draw_pieces()
 {
-	for (std::size_t y = 0; y < board.GetHeight(); y++) {
-		for (std::size_t x = 0; x < board.GetWidth(); x++) {
+	for (std::size_t y = 0; y < m_board.GetHeight(); y++) {
+		for (std::size_t x = 0; x < m_board.GetWidth(); x++) {
 			const ChessPieceLocation loc = ChessPieceLocation(x, y);
-			const ChessPiece &piece = board.GetPiece(loc);
+			const ChessPiece &piece = m_board.GetPiece(loc);
 
 			const SDL_Rect draw_rect = SDLRectMake(x * tile_width, y * tile_height, tile_width, tile_height);
 			switch (piece.GetOwner()) {
@@ -112,14 +112,14 @@ void ChessGame::draw_pieces()
 					std::size_t texture_offset = 6 + piece.GetType();
 					assert(texture_offset <= 11);
 
-					SDL_RenderCopy(main_renderer, piece_textures[texture_offset], NULL, &draw_rect);
+					SDL_RenderCopy(m_main_renderer, m_piece_textures[texture_offset], NULL, &draw_rect);
 					break;
 				}
 				case PlayerWhite: {
 					std::size_t texture_offset = piece.GetType();
 					assert(texture_offset <= 5);
 
-					SDL_RenderCopy(main_renderer, piece_textures[texture_offset], NULL, &draw_rect);
+					SDL_RenderCopy(m_main_renderer, m_piece_textures[texture_offset], NULL, &draw_rect);
 					break;
 				}
 				
@@ -146,45 +146,71 @@ static int __white_y_offset_if_necessary(const ChessPiece &piece, int offset)
 
 void ChessGame::add_valid_pawn_moves(std::vector<ChessPieceLocation> &moves, const ChessPiece &piece, const ChessPieceLocation &loc)
 {
-	if (ChessPieceLocation::CanCreateLocation(loc.x, loc.y + __white_y_offset_if_necessary(piece, 1)))
-		moves.push_back(ChessPieceLocation(loc.x, loc.y + __white_y_offset_if_necessary(piece, 1)));
+	if (ChessPieceLocation::CanCreateLocation(loc.x, loc.y + __white_y_offset_if_necessary(piece, 1))) {
+		const ChessPieceLocation tmp_loc = ChessPieceLocation(loc.x, loc.y + __white_y_offset_if_necessary(piece, 1));
+		const ChessPiece &other_piece = m_board.GetPiece(tmp_loc);
 
+		if (!other_piece.IsValid() && !piece.IsFriendly(other_piece))
+			moves.push_back(ChessPieceLocation(loc.x, loc.y + __white_y_offset_if_necessary(piece, 1)));
+	}
+
+	
 	if (piece.GetMoveCount() == 0) {
+		// no need for validation
 		if (ChessPieceLocation::CanCreateLocation(loc.x, loc.y + __white_y_offset_if_necessary(piece, 2)))
 			moves.push_back(ChessPieceLocation(loc.x, loc.y + __white_y_offset_if_necessary(piece, 2)));
 	}
+
+	// Kill Moves
+	if (ChessPieceLocation::CanCreateLocation(loc.x + 1, loc.y + __white_y_offset_if_necessary(piece, 1))) {
+		const ChessPieceLocation tmp_loc = ChessPieceLocation(loc.x + 1, loc.y + __white_y_offset_if_necessary(piece, 1));
+		const ChessPiece &other_piece = m_board.GetPiece(tmp_loc);
+
+		if (other_piece.IsValid() && !piece.IsFriendly(other_piece))
+			moves.push_back(ChessPieceLocation(tmp_loc));
+	}
+
+	if (ChessPieceLocation::CanCreateLocation(loc.x - 1, loc.y + __white_y_offset_if_necessary(piece, 1))) {
+		const ChessPieceLocation tmp_loc = ChessPieceLocation(loc.x - 1, loc.y + __white_y_offset_if_necessary(piece, 1));
+		const ChessPiece &other_piece = m_board.GetPiece(tmp_loc);
+		
+		if (other_piece.IsValid() && !piece.IsFriendly(other_piece))
+			moves.push_back(ChessPieceLocation(tmp_loc));
+	}
+
+	
 }
 
 void ChessGame::add_valid_rook_moves(std::vector<ChessPieceLocation> &moves, const ChessPiece &piece, const ChessPieceLocation &loc)
 {
-	for (auto x = loc.x + 1; x < board.GetWidth(); x++) {
+	for (auto x = loc.x + 1; x < m_board.GetWidth(); x++) {
 		const ChessPieceLocation tmp_loc = ChessPieceLocation(x, loc.y);
-		const ChessPiece &piece = board.GetPiece(tmp_loc);
-		if (piece.IsValid())
+		const ChessPiece &other_piece = m_board.GetPiece(tmp_loc);
+		if (other_piece.IsValid() || piece.IsFriendly(other_piece))
 			break;
 		moves.push_back(tmp_loc);
 	}
 
 	for (int x = loc.x - 1; x >= 0; x--) {
 		const ChessPieceLocation tmp_loc = ChessPieceLocation(x, loc.y);
-		const ChessPiece &piece = board.GetPiece(tmp_loc);
-		if (piece.IsValid())
+		const ChessPiece &other_piece = m_board.GetPiece(tmp_loc);
+		if (other_piece.IsValid() || piece.IsFriendly(other_piece))
 			break;
 		moves.push_back(tmp_loc);
 	}
 
-	for (auto y = loc.y + 1; y < board.GetHeight(); y++) {
+	for (auto y = loc.y + 1; y < m_board.GetHeight(); y++) {
 		const ChessPieceLocation tmp_loc = ChessPieceLocation(loc.x, y);
-		const ChessPiece &piece = board.GetPiece(tmp_loc);
-		if (piece.IsValid())
+		const ChessPiece &other_piece = m_board.GetPiece(tmp_loc);
+		if (other_piece.IsValid() || piece.IsFriendly(other_piece))
 			break;
 		moves.push_back(tmp_loc);
 	}
 
 	for (int y = loc.y - 1; y >= 0; y--) {
 		const ChessPieceLocation tmp_loc = ChessPieceLocation(loc.x, y);
-		const ChessPiece &piece = board.GetPiece(tmp_loc);
-		if (piece.IsValid())
+		const ChessPiece &other_piece = m_board.GetPiece(tmp_loc);
+		if (other_piece.IsValid() || piece.IsFriendly(other_piece))
 			break;
 		moves.push_back(tmp_loc);
 	}
@@ -192,61 +218,102 @@ void ChessGame::add_valid_rook_moves(std::vector<ChessPieceLocation> &moves, con
 
 void ChessGame::add_valid_knight_moves(std::vector<ChessPieceLocation> &moves, const ChessPiece &piece, const ChessPieceLocation &loc)
 {
-	if (ChessPieceLocation::CanCreateLocation(loc.x + 1, loc.y + __white_y_offset_if_necessary(piece, 2)))
-		moves.push_back(ChessPieceLocation(loc.x + 1, loc.y + __white_y_offset_if_necessary(piece, 2)));
+	if (ChessPieceLocation::CanCreateLocation(loc.x + 1, loc.y + __white_y_offset_if_necessary(piece, 2))) {
+		auto tmp_loc = ChessPieceLocation(loc.x + 1, loc.y + __white_y_offset_if_necessary(piece, 2));
+		const ChessPiece &other_piece = m_board.GetPiece(tmp_loc);
 
-	if (ChessPieceLocation::CanCreateLocation(loc.x + 1, loc.y + __white_y_offset_if_necessary(piece, -2)))
-		moves.push_back(ChessPieceLocation(loc.x + 1, loc.y + __white_y_offset_if_necessary(piece, -2)));
+		if (!piece.IsFriendly(other_piece))
+			moves.push_back(tmp_loc);
+	}
 
-	if (ChessPieceLocation::CanCreateLocation(loc.x - 1, loc.y + __white_y_offset_if_necessary(piece, 2)))
-		moves.push_back(ChessPieceLocation(loc.x - 1, loc.y + __white_y_offset_if_necessary(piece, 2)));
+	if (ChessPieceLocation::CanCreateLocation(loc.x + 1, loc.y + __white_y_offset_if_necessary(piece, -2))) {
+		auto tmp_loc = ChessPieceLocation(loc.x + 1, loc.y + __white_y_offset_if_necessary(piece, -2));
+		const ChessPiece &other_piece = m_board.GetPiece(tmp_loc);
 
-	if (ChessPieceLocation::CanCreateLocation(loc.x - 1, loc.y + __white_y_offset_if_necessary(piece, -2)))
-		moves.push_back(ChessPieceLocation(loc.x - 1, loc.y + __white_y_offset_if_necessary(piece, -2)));
+		if (!piece.IsFriendly(other_piece))
+			moves.push_back(tmp_loc);
+	}
 
-	if (ChessPieceLocation::CanCreateLocation(loc.x + 2, loc.y + __white_y_offset_if_necessary(piece, 1)))
-		moves.push_back(ChessPieceLocation(loc.x + 2, loc.y + __white_y_offset_if_necessary(piece, 1)));
+	if (ChessPieceLocation::CanCreateLocation(loc.x - 1, loc.y + __white_y_offset_if_necessary(piece, 2))) {
+		auto tmp_loc = ChessPieceLocation(loc.x - 1, loc.y + __white_y_offset_if_necessary(piece, 2));
+		const ChessPiece &other_piece = m_board.GetPiece(tmp_loc);
 
-	if (ChessPieceLocation::CanCreateLocation(loc.x + 2, loc.y + __white_y_offset_if_necessary(piece, -1)))
-		moves.push_back(ChessPieceLocation(loc.x + 2, loc.y + __white_y_offset_if_necessary(piece, -1)));
+		if (!piece.IsFriendly(other_piece))
+			moves.push_back(tmp_loc);
+	}
 
-	if (ChessPieceLocation::CanCreateLocation(loc.x - 2, loc.y + __white_y_offset_if_necessary(piece, 1)))
-		moves.push_back(ChessPieceLocation(loc.x - 2, loc.y + __white_y_offset_if_necessary(piece, 1)));
+	if (ChessPieceLocation::CanCreateLocation(loc.x - 1, loc.y + __white_y_offset_if_necessary(piece, -2))) {
+		auto tmp_loc = ChessPieceLocation(loc.x - 1, loc.y + __white_y_offset_if_necessary(piece, -2));
+		const ChessPiece &other_piece = m_board.GetPiece(tmp_loc);
 
-	if (ChessPieceLocation::CanCreateLocation(loc.x - 2, loc.y + __white_y_offset_if_necessary(piece, -1)))
-		moves.push_back(ChessPieceLocation(loc.x - 2, loc.y + __white_y_offset_if_necessary(piece, -1)));
+		if (!piece.IsFriendly(other_piece))
+			moves.push_back(tmp_loc);
+	}
+
+	if (ChessPieceLocation::CanCreateLocation(loc.x + 2, loc.y + __white_y_offset_if_necessary(piece, 1))) {
+		auto tmp_loc = ChessPieceLocation(loc.x + 2, loc.y + __white_y_offset_if_necessary(piece, 1));
+		const ChessPiece &other_piece = m_board.GetPiece(tmp_loc);
+
+		if (!piece.IsFriendly(other_piece))
+			moves.push_back(tmp_loc);
+	}
+
+	if (ChessPieceLocation::CanCreateLocation(loc.x + 2, loc.y + __white_y_offset_if_necessary(piece, -1))) {
+		auto tmp_loc = ChessPieceLocation(loc.x + 2, loc.y + __white_y_offset_if_necessary(piece, -1));
+		const ChessPiece &other_piece = m_board.GetPiece(tmp_loc);
+
+		if (!piece.IsFriendly(other_piece))
+			moves.push_back(tmp_loc);
+	}
+
+	if (ChessPieceLocation::CanCreateLocation(loc.x - 2, loc.y + __white_y_offset_if_necessary(piece, 1))) {
+		auto tmp_loc = ChessPieceLocation(loc.x - 2, loc.y + __white_y_offset_if_necessary(piece, 1));
+		const ChessPiece &other_piece = m_board.GetPiece(tmp_loc);
+
+		if (!piece.IsFriendly(other_piece))
+			moves.push_back(tmp_loc);
+	}
+
+	if (ChessPieceLocation::CanCreateLocation(loc.x - 2, loc.y + __white_y_offset_if_necessary(piece, -1))) {
+		auto tmp_loc = ChessPieceLocation(loc.x - 2, loc.y + __white_y_offset_if_necessary(piece, -1));
+		const ChessPiece &other_piece = m_board.GetPiece(tmp_loc);
+
+		if (!piece.IsFriendly(other_piece))
+			moves.push_back(tmp_loc);
+	}
 }
 
 void ChessGame::add_valid_bishop_moves(std::vector<ChessPieceLocation> &moves, const ChessPiece &piece, const ChessPieceLocation &loc)
 {
-	for (auto x = loc.x + 1, y = loc.y + 1; x < board.GetWidth() && y < board.GetHeight(); x++, y++) {
+
+	for (auto x = loc.x + 1, y = loc.y + 1; x < m_board.GetWidth() && y < m_board.GetHeight(); x++, y++) {
 		const ChessPieceLocation tmp_loc = ChessPieceLocation(x, y);
-		const ChessPiece &piece = board.GetPiece(tmp_loc);
-		if (piece.IsValid())
+		const ChessPiece &other_piece = m_board.GetPiece(tmp_loc);
+		if (other_piece.IsValid() || piece.IsFriendly(other_piece))
 			break;
 		moves.push_back(tmp_loc);
 	}
 
-	for (auto x = loc.x + 1, y = loc.y - 1; x < board.GetWidth() && y < board.GetHeight(); x++, y--) {
+	for (auto x = loc.x + 1, y = loc.y - 1; x < m_board.GetWidth() && y < m_board.GetHeight(); x++, y--) {
 		const ChessPieceLocation tmp_loc = ChessPieceLocation(x, y);
-		const ChessPiece &piece = board.GetPiece(tmp_loc);
-		if (piece.IsValid())
+		const ChessPiece &other_piece = m_board.GetPiece(tmp_loc);
+		if (other_piece.IsValid() || piece.IsFriendly(other_piece))
 			break;
 		moves.push_back(tmp_loc);
 	}
 
-	for (auto x = loc.x - 1, y = loc.y + 1; x < board.GetWidth() && y < board.GetHeight(); x--, y++) {
+	for (auto x = loc.x - 1, y = loc.y + 1; x < m_board.GetWidth() && y < m_board.GetHeight(); x--, y++) {
 		const ChessPieceLocation tmp_loc = ChessPieceLocation(x, y);
-		const ChessPiece &piece = board.GetPiece(tmp_loc);
-		if (piece.IsValid())
+		const ChessPiece &other_piece = m_board.GetPiece(tmp_loc);
+		if (other_piece.IsValid() || piece.IsFriendly(other_piece))
 			break;
 		moves.push_back(tmp_loc);
 	}
 
-	for (auto x = loc.x - 1, y = loc.y - 1; x < board.GetWidth() && y < board.GetHeight(); x--, y--) {
+	for (auto x = loc.x - 1, y = loc.y - 1; x < m_board.GetWidth() && y < m_board.GetHeight(); x--, y--) {
 		const ChessPieceLocation tmp_loc = ChessPieceLocation(x, y);
-		const ChessPiece &piece = board.GetPiece(tmp_loc);
-		if (piece.IsValid())
+		const ChessPiece &other_piece = m_board.GetPiece(tmp_loc);
+		if (other_piece.IsValid() || piece.IsFriendly(other_piece))
 			break;
 		moves.push_back(tmp_loc);
 	}
@@ -263,23 +330,68 @@ void ChessGame::add_valid_queen_moves(std::vector<ChessPieceLocation> &moves, co
 // Currently lets you overwrite your own pieces. TODO fix
 void ChessGame::add_valid_king_moves(std::vector<ChessPieceLocation> &moves, const ChessPiece &piece, const ChessPieceLocation &loc)
 {
-	if (ChessPieceLocation::CanCreateLocation(loc.x, loc.y + 1))
-		moves.push_back(ChessPieceLocation(loc.x, loc.y + 1));
-	if (ChessPieceLocation::CanCreateLocation(loc.x, loc.y - 1))
-		moves.push_back(ChessPieceLocation(loc.x, loc.y - 1));
-	if (ChessPieceLocation::CanCreateLocation(loc.x + 1, loc.y))
-		moves.push_back(ChessPieceLocation(loc.x + 1, loc.y));
-	if (ChessPieceLocation::CanCreateLocation(loc.x - 1, loc.y))
-		moves.push_back(ChessPieceLocation(loc.x - 1, loc.y));
+	if (ChessPieceLocation::CanCreateLocation(loc.x, loc.y + 1)) {
+		auto tmp_loc = ChessPieceLocation(loc.x, loc.y + 1);
+		const ChessPiece &other_piece = m_board.GetPiece(tmp_loc);
 
-	if (ChessPieceLocation::CanCreateLocation(loc.x + 1, loc.y + 1))
-		moves.push_back(ChessPieceLocation(loc.x + 1, loc.y + 1));
-	if (ChessPieceLocation::CanCreateLocation(loc.x + 1, loc.y - 1))
-		moves.push_back(ChessPieceLocation(loc.x + 1, loc.y - 1));
-	if (ChessPieceLocation::CanCreateLocation(loc.x - 1, loc.y + 1))
-		moves.push_back(ChessPieceLocation(loc.x - 1, loc.y + 1));
-	if (ChessPieceLocation::CanCreateLocation(loc.x - 1, loc.y - 1))
-		moves.push_back(ChessPieceLocation(loc.x - 1, loc.y - 1));
+		if (!piece.IsFriendly(other_piece))
+			moves.push_back(tmp_loc);
+	}
+
+	if (ChessPieceLocation::CanCreateLocation(loc.x, loc.y - 1)) {
+		auto tmp_loc = ChessPieceLocation(loc.x, loc.y - 1);
+		const ChessPiece &other_piece = m_board.GetPiece(tmp_loc);
+
+		if (!piece.IsFriendly(other_piece))
+			moves.push_back(tmp_loc);
+	}
+	if (ChessPieceLocation::CanCreateLocation(loc.x + 1, loc.y)) {
+		auto tmp_loc = ChessPieceLocation(loc.x + 1, loc.y);
+		const ChessPiece &other_piece = m_board.GetPiece(tmp_loc);
+
+		if (!piece.IsFriendly(other_piece))
+			moves.push_back(tmp_loc);
+	}
+
+	if (ChessPieceLocation::CanCreateLocation(loc.x - 1, loc.y)) {
+		auto tmp_loc = ChessPieceLocation(loc.x - 1, loc.y);
+		const ChessPiece &other_piece = m_board.GetPiece(tmp_loc);
+
+		if (!piece.IsFriendly(other_piece))
+			moves.push_back(tmp_loc);
+	}
+
+	if (ChessPieceLocation::CanCreateLocation(loc.x + 1, loc.y + 1)) {
+		auto tmp_loc = ChessPieceLocation(loc.x + 1, loc.y + 1);
+		const ChessPiece &other_piece = m_board.GetPiece(tmp_loc);
+
+		if (!piece.IsFriendly(other_piece))
+			moves.push_back(tmp_loc);
+	}
+
+	if (ChessPieceLocation::CanCreateLocation(loc.x + 1, loc.y - 1)) {
+		auto tmp_loc = ChessPieceLocation(loc.x + 1, loc.y - 1);
+		const ChessPiece &other_piece = m_board.GetPiece(tmp_loc);
+
+		if (!piece.IsFriendly(other_piece))
+			moves.push_back(tmp_loc);
+	}
+
+	if (ChessPieceLocation::CanCreateLocation(loc.x - 1, loc.y + 1)) {
+		auto tmp_loc = ChessPieceLocation(loc.x - 1, loc.y + 1);
+		const ChessPiece &other_piece = m_board.GetPiece(tmp_loc);
+
+		if (!piece.IsFriendly(other_piece))
+			moves.push_back(tmp_loc);
+	}
+
+	if (ChessPieceLocation::CanCreateLocation(loc.x - 1, loc.y - 1)) {
+		auto tmp_loc = ChessPieceLocation(loc.x - 1, loc.y - 1);
+		const ChessPiece &other_piece = m_board.GetPiece(tmp_loc);
+
+		if (!piece.IsFriendly(other_piece))
+			moves.push_back(tmp_loc);
+	}
 }
 
 
@@ -331,16 +443,31 @@ void ChessGame::handle_click(const SDL_MouseButtonEvent &event)
 	const std::size_t tile_x = x / tile_width;
 	const std::size_t tile_y = y / tile_height;
 
-	const ChessPieceLocation loc = ChessPieceLocation(tile_x, tile_y);
-	const ChessPiece &piece = board.GetPiece(loc);
+	const ChessPieceLocation click_loc = ChessPieceLocation(tile_x, tile_y);
 
-	if (!piece.IsValid())
-		return;
- 
-	const std::vector<ChessPieceLocation> moves = get_valid_moves(piece, loc);
-	if (moves.empty())
-		return;
-	board.MovePiece(loc, moves.front());
+	if (m_show_possible_moves) {
+		if (!m_possible_moves.empty()) {
+			for (auto &move : m_possible_moves) {
+				if (move == click_loc) {
+					m_board.MovePiece(selected_piece_location, move);
+				}
+			}
+		}
+
+		m_show_possible_moves = false;
+	} else {
+		const ChessPiece &piece = m_board.GetPiece(click_loc);
+		if (!piece.IsValid())
+			return;
+	
+		const std::vector<ChessPieceLocation> moves = get_valid_moves(piece, click_loc);
+		if (moves.empty())
+			return;
+		
+		m_possible_moves = moves;
+		m_show_possible_moves = true;
+		selected_piece_location = click_loc;
+	}
 }
 
 void ChessGame::poll_events()
@@ -349,7 +476,7 @@ void ChessGame::poll_events()
 	while (SDL_PollEvent(&e)) {
 		switch (e.type) {
 			case SDL_QUIT: {
-				running = false;
+				m_running = false;
 				break;
 			}
 			case SDL_MOUSEBUTTONUP: {
@@ -365,20 +492,40 @@ void ChessGame::update(float dt)
 	poll_events();
 }
 
+void ChessGame::draw_possible_moves()
+{
+	for (auto &loc : m_possible_moves) {
+		const SDL_Rect fillRect = {
+			(int)loc.x * tile_width,
+			(int)loc.y * tile_height,
+			tile_width,
+			tile_height
+		};
+
+		SDL_SetRenderDrawColor(m_main_renderer, 109, 219, 252, 255);
+		SDL_RenderFillRect(m_main_renderer, &fillRect);
+	}
+}
+
 void ChessGame::draw()
 {
-	SDL_SetRenderDrawColor(main_renderer, 255, 255, 255, 255);
-	SDL_RenderClear(main_renderer);
+	SDL_SetRenderDrawColor(m_main_renderer, 255, 255, 255, 255);
+	SDL_RenderClear(m_main_renderer);
 
 	draw_board();
 	draw_pieces();
 
-	SDL_RenderPresent(main_renderer);
+	// draw possible moves
+	if (m_show_possible_moves) {
+		draw_possible_moves();
+	}
+
+	SDL_RenderPresent(m_main_renderer);
 }
 
 void ChessGame::unload_piece_textures()
 {
-	for (SDL_Texture *&texture : piece_textures) {
+	for (SDL_Texture *&texture : m_piece_textures) {
 		SDL_DestroyTexture(texture);
 		texture = nullptr;
 	}
@@ -393,8 +540,8 @@ void ChessGame::cleanup_libraries()
 void ChessGame::cleanup()
 {
 	unload_piece_textures();
-	SDL_DestroyRenderer(main_renderer);
-	SDL_DestroyWindow(main_window);
+	SDL_DestroyRenderer(m_main_renderer);
+	SDL_DestroyWindow(m_main_window);
 
 	cleanup_libraries();
 }
@@ -402,10 +549,10 @@ void ChessGame::cleanup()
 void ChessGame::run() {
 	setup();
 
-	running = true;
+	m_running = true;
 
 	float dt = 0.0;
-	while (running) {
+	while (m_running) {
 		update(dt);
 		draw();
 		SDL_Delay(1000.f / target_fps);

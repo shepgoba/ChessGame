@@ -20,6 +20,11 @@ bool ChessPiece::IsValid() const
 	return (owner != PlayerNone) && (type != PieceTypeNone);
 }
 
+bool ChessPiece::IsFriendly(const ChessPiece &other) const
+{
+	return (owner == other.GetOwner());
+}
+
 void ChessPiece::IncrementMoveCount()
 {
 	moveCount++;

@@ -31,6 +31,7 @@ public:
 	PieceType GetType() const;
 
 	bool IsValid() const;
+	bool IsFriendly(const ChessPiece &other) const;
 	
 	void IncrementMoveCount();
 	std::size_t GetMoveCount() const;

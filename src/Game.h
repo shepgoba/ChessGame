@@ -25,14 +25,19 @@ private:
 	constexpr static int tile_width = window_width / 8;
 	constexpr static int tile_height = window_height / 8;
 
-	bool running = false;
+	bool m_running = false;
+	bool m_show_possible_moves = false;
 
-	SDL_Window *main_window = nullptr;
-	SDL_Renderer *main_renderer = nullptr;
+	SDL_Window *m_main_window = nullptr;
+	SDL_Renderer *m_main_renderer = nullptr;
 
-	ChessBoard board;
-	std::array<SDL_Texture *, 12> piece_textures{};
-	std::vector<std::string> args;
+	ChessBoard m_board;
+	std::array<SDL_Texture *, 12> m_piece_textures;
+	std::vector<std::string> m_args;
+	
+
+	ChessPieceLocation selected_piece_location;
+	std::vector<ChessPieceLocation> m_possible_moves;
 
 	// Setup Functions
 	void setup_libraries();
@@ -54,6 +59,7 @@ private:
 	void add_valid_king_moves(std::vector<ChessPieceLocation> &moves, const ChessPiece &piece, const ChessPieceLocation &loc);
 	
 	//Drawing functions
+	void draw_possible_moves();
 	void draw_board();
 	void draw_pieces();
 	void draw();
