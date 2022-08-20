@@ -158,7 +158,7 @@ void ChessGame::add_valid_pawn_moves(std::vector<ChessPieceLocation> &moves, con
 void ChessGame::add_valid_rook_moves(std::vector<ChessPieceLocation> &moves, const ChessPiece &piece, const ChessPieceLocation &loc)
 {
 	for (auto x = loc.x + 1; x < board.GetWidth(); x++) {
-		ChessPieceLocation tmp_loc = ChessPieceLocation(x, loc.y);
+		const ChessPieceLocation tmp_loc = ChessPieceLocation(x, loc.y);
 		const ChessPiece &piece = board.GetPiece(tmp_loc);
 		if (piece.IsValid())
 			break;
@@ -166,7 +166,7 @@ void ChessGame::add_valid_rook_moves(std::vector<ChessPieceLocation> &moves, con
 	}
 
 	for (int x = loc.x - 1; x >= 0; x--) {
-		ChessPieceLocation tmp_loc = ChessPieceLocation(x, loc.y);
+		const ChessPieceLocation tmp_loc = ChessPieceLocation(x, loc.y);
 		const ChessPiece &piece = board.GetPiece(tmp_loc);
 		if (piece.IsValid())
 			break;
@@ -174,7 +174,7 @@ void ChessGame::add_valid_rook_moves(std::vector<ChessPieceLocation> &moves, con
 	}
 
 	for (auto y = loc.y + 1; y < board.GetHeight(); y++) {
-		ChessPieceLocation tmp_loc = ChessPieceLocation(loc.x, y);
+		const ChessPieceLocation tmp_loc = ChessPieceLocation(loc.x, y);
 		const ChessPiece &piece = board.GetPiece(tmp_loc);
 		if (piece.IsValid())
 			break;
@@ -182,7 +182,7 @@ void ChessGame::add_valid_rook_moves(std::vector<ChessPieceLocation> &moves, con
 	}
 
 	for (int y = loc.y - 1; y >= 0; y--) {
-		ChessPieceLocation tmp_loc = ChessPieceLocation(loc.x, y);
+		const ChessPieceLocation tmp_loc = ChessPieceLocation(loc.x, y);
 		const ChessPiece &piece = board.GetPiece(tmp_loc);
 		if (piece.IsValid())
 			break;
@@ -220,42 +220,34 @@ void ChessGame::add_valid_knight_moves(std::vector<ChessPieceLocation> &moves, c
 void ChessGame::add_valid_bishop_moves(std::vector<ChessPieceLocation> &moves, const ChessPiece &piece, const ChessPieceLocation &loc)
 {
 	for (auto x = loc.x + 1, y = loc.y + 1; x < board.GetWidth() && y < board.GetHeight(); x++, y++) {
-		ChessPieceLocation tmp_loc = ChessPieceLocation(x, y);
+		const ChessPieceLocation tmp_loc = ChessPieceLocation(x, y);
 		const ChessPiece &piece = board.GetPiece(tmp_loc);
-
 		if (piece.IsValid())
 			break;
-
 		moves.push_back(tmp_loc);
 	}
 
 	for (auto x = loc.x + 1, y = loc.y - 1; x < board.GetWidth() && y < board.GetHeight(); x++, y--) {
-		ChessPieceLocation tmp_loc = ChessPieceLocation(x, y);
+		const ChessPieceLocation tmp_loc = ChessPieceLocation(x, y);
 		const ChessPiece &piece = board.GetPiece(tmp_loc);
-
 		if (piece.IsValid())
 			break;
-
 		moves.push_back(tmp_loc);
 	}
 
 	for (auto x = loc.x - 1, y = loc.y + 1; x < board.GetWidth() && y < board.GetHeight(); x--, y++) {
-		ChessPieceLocation tmp_loc = ChessPieceLocation(x, y);
+		const ChessPieceLocation tmp_loc = ChessPieceLocation(x, y);
 		const ChessPiece &piece = board.GetPiece(tmp_loc);
-
 		if (piece.IsValid())
 			break;
-
 		moves.push_back(tmp_loc);
 	}
 
 	for (auto x = loc.x - 1, y = loc.y - 1; x < board.GetWidth() && y < board.GetHeight(); x--, y--) {
-		ChessPieceLocation tmp_loc = ChessPieceLocation(x, y);
+		const ChessPieceLocation tmp_loc = ChessPieceLocation(x, y);
 		const ChessPiece &piece = board.GetPiece(tmp_loc);
-
 		if (piece.IsValid())
 			break;
-
 		moves.push_back(tmp_loc);
 	}
 }
