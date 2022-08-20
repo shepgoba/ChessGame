@@ -36,7 +36,7 @@ private:
 	std::vector<std::string> m_args;
 	
 
-	ChessPieceLocation selected_piece_location;
+	int selected_piece_x, selected_piece_y;
 	std::vector<ChessPieceLocation> m_possible_moves;
 
 	// Setup Functions

@@ -15,7 +15,7 @@ static std::string GetAssetPath(const char *in)
 	return std::string("assets/") + in;
 }
 
-ChessGame::ChessGame(int argc, char *argv[]) : selected_piece_location(0, 0) {
+ChessGame::ChessGame(int argc, char *argv[]) {
 	for (int i = 0; i < argc; i++) {
 		auto str = std::string(argv[i]);
 		m_args.push_back(str);
@@ -177,8 +177,6 @@ void ChessGame::add_valid_pawn_moves(std::vector<ChessPieceLocation> &moves, con
 		if (other_piece.IsValid() && !piece.IsFriendly(other_piece))
 			moves.push_back(ChessPieceLocation(tmp_loc));
 	}
-
-	
 }
 
 void ChessGame::add_valid_rook_moves(std::vector<ChessPieceLocation> &moves, const ChessPiece &piece, const ChessPieceLocation &loc)
@@ -191,7 +189,7 @@ void ChessGame::add_valid_rook_moves(std::vector<ChessPieceLocation> &moves, con
 		moves.push_back(tmp_loc);
 	}
 
-	for (int x = loc.x - 1; x >= 0; x--) {
+	for (auto x = loc.x - 1; x >= 0; x--) {
 		const ChessPieceLocation tmp_loc = ChessPieceLocation(x, loc.y);
 		const ChessPiece &other_piece = m_board.GetPiece(tmp_loc);
 		if (other_piece.IsValid() || piece.IsFriendly(other_piece))
@@ -207,7 +205,7 @@ void ChessGame::add_valid_rook_moves(std::vector<ChessPieceLocation> &moves, con
 		moves.push_back(tmp_loc);
 	}
 
-	for (int y = loc.y - 1; y >= 0; y--) {
+	for (auto y = loc.y - 1; y >= 0; y--) {
 		const ChessPieceLocation tmp_loc = ChessPieceLocation(loc.x, y);
 		const ChessPiece &other_piece = m_board.GetPiece(tmp_loc);
 		if (other_piece.IsValid() || piece.IsFriendly(other_piece))
@@ -449,6 +447,7 @@ void ChessGame::handle_click(const SDL_MouseButtonEvent &event)
 		if (!m_possible_moves.empty()) {
 			for (auto &move : m_possible_moves) {
 				if (move == click_loc) {
+					const auto selected_piece_location = ChessPieceLocation(selected_piece_x, selected_piece_y);
 					m_board.MovePiece(selected_piece_location, move);
 				}
 			}
@@ -466,7 +465,8 @@ void ChessGame::handle_click(const SDL_MouseButtonEvent &event)
 		
 		m_possible_moves = moves;
 		m_show_possible_moves = true;
-		selected_piece_location = click_loc;
+		selected_piece_x = click_loc.x;
+		selected_piece_y = click_loc.y;
 	}
 }
 
