@@ -219,12 +219,53 @@ void ChessGame::add_valid_knight_moves(std::vector<ChessPieceLocation> &moves, c
 
 void ChessGame::add_valid_bishop_moves(std::vector<ChessPieceLocation> &moves, const ChessPiece &piece, const ChessPieceLocation &loc)
 {
+	for (auto x = loc.x + 1, y = loc.y + 1; x < board.GetWidth() && y < board.GetHeight(); x++, y++) {
+		ChessPieceLocation tmp_loc = ChessPieceLocation(x, y);
+		const ChessPiece &piece = board.GetPiece(tmp_loc);
 
+		if (piece.IsValid())
+			break;
+
+		moves.push_back(tmp_loc);
+	}
+
+	for (auto x = loc.x + 1, y = loc.y - 1; x < board.GetWidth() && y < board.GetHeight(); x++, y--) {
+		ChessPieceLocation tmp_loc = ChessPieceLocation(x, y);
+		const ChessPiece &piece = board.GetPiece(tmp_loc);
+
+		if (piece.IsValid())
+			break;
+
+		moves.push_back(tmp_loc);
+	}
+
+	for (auto x = loc.x - 1, y = loc.y + 1; x < board.GetWidth() && y < board.GetHeight(); x--, y++) {
+		ChessPieceLocation tmp_loc = ChessPieceLocation(x, y);
+		const ChessPiece &piece = board.GetPiece(tmp_loc);
+
+		if (piece.IsValid())
+			break;
+
+		moves.push_back(tmp_loc);
+	}
+
+	for (auto x = loc.x - 1, y = loc.y - 1; x < board.GetWidth() && y < board.GetHeight(); x--, y--) {
+		ChessPieceLocation tmp_loc = ChessPieceLocation(x, y);
+		const ChessPiece &piece = board.GetPiece(tmp_loc);
+
+		if (piece.IsValid())
+			break;
+
+		moves.push_back(tmp_loc);
+	}
 }
 
+// Probably correct
 void ChessGame::add_valid_queen_moves(std::vector<ChessPieceLocation> &moves, const ChessPiece &piece, const ChessPieceLocation &loc)
 {
-
+	add_valid_bishop_moves(moves, piece, loc);
+	add_valid_rook_moves(moves, piece, loc);
+	add_valid_king_moves(moves, piece, loc);
 }
 
 // Currently lets you overwrite your own pieces. TODO fix

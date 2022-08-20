@@ -13,7 +13,7 @@ struct ChessPieceLocation {
 	std::size_t y;
 
 	ChessPieceLocation(std::size_t x, std::size_t y) : x(x), y(y) {
-		assert(CanCreateLocation(x, y));
+		assert(CanCreateLocation(x, y) && "Invalid location");
 	}
 
 	ChessPieceLocation operator+(const ChessPieceLocation &other) const {

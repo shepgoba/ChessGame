@@ -7,7 +7,7 @@ OBJ_DIR := obj
 SRC_FILES := $(wildcard $(SRC_DIR)/*.cpp)
 OBJ_FILES := $(patsubst $(SRC_DIR)/%.cpp,$(OBJ_DIR)/%.o,$(SRC_FILES))
 
-CXXFLAGS := -Og -Wall -Wextra -Wno-unused-variable -Wno-unused-function -Wno-unused-parameter -Werror -std=c++17
+CXXFLAGS := -O3 -Wall -Wextra -Wno-unused-variable -Wno-unused-function -Wno-unused-parameter -Werror -std=c++17
 LDFLAGS :=
 LIBS := -lmingw32 -lSDL2main -lSDL2 -lSDL2_image
 
