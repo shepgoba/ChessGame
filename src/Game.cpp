@@ -232,64 +232,64 @@ void ChessGame::add_valid_rook_moves(std::vector<ChessPieceLocation> &moves, con
 
 void ChessGame::add_valid_knight_moves(std::vector<ChessPieceLocation> &moves, const ChessPiece &piece, const ChessPieceLocation &loc)
 {
-	if (ChessPieceLocation::CanCreateLocation(loc.x + 1, loc.y + __white_y_offset_if_necessary(piece, 2))) {
-		auto tmp_loc = ChessPieceLocation(loc.x + 1, loc.y + __white_y_offset_if_necessary(piece, 2));
+	if (ChessPieceLocation::CanCreateLocation(loc.x + 1, loc.y + 2)) {
+		auto tmp_loc = ChessPieceLocation(loc.x + 1, loc.y + 2);
 		const ChessPiece &other_piece = m_board.GetPiece(tmp_loc);
 
 		if (!piece.IsFriendly(other_piece))
 			moves.push_back(tmp_loc);
 	}
 
-	if (ChessPieceLocation::CanCreateLocation(loc.x + 1, loc.y + __white_y_offset_if_necessary(piece, -2))) {
-		auto tmp_loc = ChessPieceLocation(loc.x + 1, loc.y + __white_y_offset_if_necessary(piece, -2));
+	if (ChessPieceLocation::CanCreateLocation(loc.x + 1, loc.y - 2)) {
+		auto tmp_loc = ChessPieceLocation(loc.x + 1, loc.y - 2);
 		const ChessPiece &other_piece = m_board.GetPiece(tmp_loc);
 
 		if (!piece.IsFriendly(other_piece))
 			moves.push_back(tmp_loc);
 	}
 
-	if (ChessPieceLocation::CanCreateLocation(loc.x - 1, loc.y + __white_y_offset_if_necessary(piece, 2))) {
-		auto tmp_loc = ChessPieceLocation(loc.x - 1, loc.y + __white_y_offset_if_necessary(piece, 2));
+	if (ChessPieceLocation::CanCreateLocation(loc.x - 1, loc.y + 2)) {
+		auto tmp_loc = ChessPieceLocation(loc.x - 1, loc.y + 2);
 		const ChessPiece &other_piece = m_board.GetPiece(tmp_loc);
 
 		if (!piece.IsFriendly(other_piece))
 			moves.push_back(tmp_loc);
 	}
 
-	if (ChessPieceLocation::CanCreateLocation(loc.x - 1, loc.y + __white_y_offset_if_necessary(piece, -2))) {
-		auto tmp_loc = ChessPieceLocation(loc.x - 1, loc.y + __white_y_offset_if_necessary(piece, -2));
+	if (ChessPieceLocation::CanCreateLocation(loc.x - 1, loc.y - 2)) {
+		auto tmp_loc = ChessPieceLocation(loc.x - 1, loc.y - 2);
 		const ChessPiece &other_piece = m_board.GetPiece(tmp_loc);
 
 		if (!piece.IsFriendly(other_piece))
 			moves.push_back(tmp_loc);
 	}
 
-	if (ChessPieceLocation::CanCreateLocation(loc.x + 2, loc.y + __white_y_offset_if_necessary(piece, 1))) {
-		auto tmp_loc = ChessPieceLocation(loc.x + 2, loc.y + __white_y_offset_if_necessary(piece, 1));
+	if (ChessPieceLocation::CanCreateLocation(loc.x + 2, loc.y + 1)) {
+		auto tmp_loc = ChessPieceLocation(loc.x + 2, loc.y + 1);
 		const ChessPiece &other_piece = m_board.GetPiece(tmp_loc);
 
 		if (!piece.IsFriendly(other_piece))
 			moves.push_back(tmp_loc);
 	}
 
-	if (ChessPieceLocation::CanCreateLocation(loc.x + 2, loc.y + __white_y_offset_if_necessary(piece, -1))) {
-		auto tmp_loc = ChessPieceLocation(loc.x + 2, loc.y + __white_y_offset_if_necessary(piece, -1));
+	if (ChessPieceLocation::CanCreateLocation(loc.x + 2, loc.y - 1)) {
+		auto tmp_loc = ChessPieceLocation(loc.x + 2, loc.y - 1);
 		const ChessPiece &other_piece = m_board.GetPiece(tmp_loc);
 
 		if (!piece.IsFriendly(other_piece))
 			moves.push_back(tmp_loc);
 	}
 
-	if (ChessPieceLocation::CanCreateLocation(loc.x - 2, loc.y + __white_y_offset_if_necessary(piece, 1))) {
-		auto tmp_loc = ChessPieceLocation(loc.x - 2, loc.y + __white_y_offset_if_necessary(piece, 1));
+	if (ChessPieceLocation::CanCreateLocation(loc.x - 2, loc.y + 1)) {
+		auto tmp_loc = ChessPieceLocation(loc.x - 2, loc.y + 1);
 		const ChessPiece &other_piece = m_board.GetPiece(tmp_loc);
 
 		if (!piece.IsFriendly(other_piece))
 			moves.push_back(tmp_loc);
 	}
 
-	if (ChessPieceLocation::CanCreateLocation(loc.x - 2, loc.y + __white_y_offset_if_necessary(piece, -1))) {
-		auto tmp_loc = ChessPieceLocation(loc.x - 2, loc.y + __white_y_offset_if_necessary(piece, -1));
+	if (ChessPieceLocation::CanCreateLocation(loc.x - 2, loc.y  -1)) {
+		auto tmp_loc = ChessPieceLocation(loc.x - 2, loc.y - 1);
 		const ChessPiece &other_piece = m_board.GetPiece(tmp_loc);
 
 		if (!piece.IsFriendly(other_piece))
