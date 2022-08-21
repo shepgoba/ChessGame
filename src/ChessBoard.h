@@ -4,6 +4,7 @@
 #include <cassert>
 #include <cstddef>
 #include <cstdio>
+#include <optional>
 
 // Described with the top left tile as the origin,
 // and the x-axis increasing as it moves to the right,
@@ -30,6 +31,13 @@ struct ChessPieceLocation {
 	
 	constexpr static bool CanCreateLocation(std::size_t x, std::size_t y) {
 		return (x <= 7) && (y <= 7);
+	}
+
+	static std::optional<ChessPieceLocation> CreateLocationIfPossible(std::size_t x, std::size_t y) {
+		if (CanCreateLocation(x, y))
+			return ChessPieceLocation(x, y);
+		
+		return std::nullopt;
 	}
 };
 

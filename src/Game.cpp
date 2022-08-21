@@ -232,64 +232,64 @@ void ChessGame::add_valid_rook_moves(std::vector<ChessPieceLocation> &moves, con
 
 void ChessGame::add_valid_knight_moves(std::vector<ChessPieceLocation> &moves, const ChessPiece &piece, const ChessPieceLocation &loc)
 {
-	if (ChessPieceLocation::CanCreateLocation(loc.x + 1, loc.y + 2)) {
-		auto tmp_loc = ChessPieceLocation(loc.x + 1, loc.y + 2);
+	if (auto opt = ChessPieceLocation::CreateLocationIfPossible(loc.x + 1, loc.y + 2)) {
+		const ChessPieceLocation &tmp_loc = *opt;
 		const ChessPiece &other_piece = m_board.GetPiece(tmp_loc);
 
 		if (!piece.IsFriendly(other_piece))
 			moves.push_back(tmp_loc);
 	}
 
-	if (ChessPieceLocation::CanCreateLocation(loc.x + 1, loc.y - 2)) {
-		auto tmp_loc = ChessPieceLocation(loc.x + 1, loc.y - 2);
+	if (auto opt = ChessPieceLocation::CreateLocationIfPossible(loc.x + 1, loc.y - 2)) {
+		const ChessPieceLocation &tmp_loc = *opt;
 		const ChessPiece &other_piece = m_board.GetPiece(tmp_loc);
 
 		if (!piece.IsFriendly(other_piece))
 			moves.push_back(tmp_loc);
 	}
 
-	if (ChessPieceLocation::CanCreateLocation(loc.x - 1, loc.y + 2)) {
-		auto tmp_loc = ChessPieceLocation(loc.x - 1, loc.y + 2);
+	if (auto opt = ChessPieceLocation::CreateLocationIfPossible(loc.x - 1, loc.y + 2)) {
+		const ChessPieceLocation &tmp_loc = *opt;
 		const ChessPiece &other_piece = m_board.GetPiece(tmp_loc);
 
 		if (!piece.IsFriendly(other_piece))
 			moves.push_back(tmp_loc);
 	}
 
-	if (ChessPieceLocation::CanCreateLocation(loc.x - 1, loc.y - 2)) {
-		auto tmp_loc = ChessPieceLocation(loc.x - 1, loc.y - 2);
+	if (auto opt = ChessPieceLocation::CreateLocationIfPossible(loc.x - 1, loc.y - 2)) {
+		const ChessPieceLocation &tmp_loc = *opt;
 		const ChessPiece &other_piece = m_board.GetPiece(tmp_loc);
 
 		if (!piece.IsFriendly(other_piece))
 			moves.push_back(tmp_loc);
 	}
 
-	if (ChessPieceLocation::CanCreateLocation(loc.x + 2, loc.y + 1)) {
-		auto tmp_loc = ChessPieceLocation(loc.x + 2, loc.y + 1);
+	if (auto opt = ChessPieceLocation::CreateLocationIfPossible(loc.x + 2, loc.y + 1)) {
+		const ChessPieceLocation &tmp_loc = *opt;
 		const ChessPiece &other_piece = m_board.GetPiece(tmp_loc);
 
 		if (!piece.IsFriendly(other_piece))
 			moves.push_back(tmp_loc);
 	}
 
-	if (ChessPieceLocation::CanCreateLocation(loc.x + 2, loc.y - 1)) {
-		auto tmp_loc = ChessPieceLocation(loc.x + 2, loc.y - 1);
+	if (auto opt = ChessPieceLocation::CreateLocationIfPossible(loc.x + 2, loc.y - 1)) {
+		const ChessPieceLocation &tmp_loc = *opt;
 		const ChessPiece &other_piece = m_board.GetPiece(tmp_loc);
 
 		if (!piece.IsFriendly(other_piece))
 			moves.push_back(tmp_loc);
 	}
 
-	if (ChessPieceLocation::CanCreateLocation(loc.x - 2, loc.y + 1)) {
-		auto tmp_loc = ChessPieceLocation(loc.x - 2, loc.y + 1);
+	if (auto opt = ChessPieceLocation::CreateLocationIfPossible(loc.x - 2, loc.y + 1)) {
+		const ChessPieceLocation &tmp_loc = *opt;
 		const ChessPiece &other_piece = m_board.GetPiece(tmp_loc);
 
 		if (!piece.IsFriendly(other_piece))
 			moves.push_back(tmp_loc);
 	}
 
-	if (ChessPieceLocation::CanCreateLocation(loc.x - 2, loc.y  -1)) {
-		auto tmp_loc = ChessPieceLocation(loc.x - 2, loc.y - 1);
+	if (auto opt = ChessPieceLocation::CreateLocationIfPossible(loc.x - 2, loc.y - 1)) {
+		const ChessPieceLocation &tmp_loc = *opt;
 		const ChessPiece &other_piece = m_board.GetPiece(tmp_loc);
 
 		if (!piece.IsFriendly(other_piece))
@@ -358,63 +358,64 @@ void ChessGame::add_valid_queen_moves(std::vector<ChessPieceLocation> &moves, co
 
 void ChessGame::add_valid_king_moves(std::vector<ChessPieceLocation> &moves, const ChessPiece &piece, const ChessPieceLocation &loc)
 {
-	if (ChessPieceLocation::CanCreateLocation(loc.x, loc.y + 1)) {
-		auto tmp_loc = ChessPieceLocation(loc.x, loc.y + 1);
+	if (auto opt = ChessPieceLocation::CreateLocationIfPossible(loc.x, loc.y + 1)) {
+		const ChessPieceLocation &tmp_loc = *opt;
 		const ChessPiece &other_piece = m_board.GetPiece(tmp_loc);
 
 		if (!piece.IsFriendly(other_piece))
 			moves.push_back(tmp_loc);
 	}
 
-	if (ChessPieceLocation::CanCreateLocation(loc.x, loc.y - 1)) {
-		auto tmp_loc = ChessPieceLocation(loc.x, loc.y - 1);
-		const ChessPiece &other_piece = m_board.GetPiece(tmp_loc);
-
-		if (!piece.IsFriendly(other_piece))
-			moves.push_back(tmp_loc);
-	}
-	if (ChessPieceLocation::CanCreateLocation(loc.x + 1, loc.y)) {
-		auto tmp_loc = ChessPieceLocation(loc.x + 1, loc.y);
+	if (auto opt = ChessPieceLocation::CreateLocationIfPossible(loc.x, loc.y - 1)) {
+		const ChessPieceLocation &tmp_loc = *opt;
 		const ChessPiece &other_piece = m_board.GetPiece(tmp_loc);
 
 		if (!piece.IsFriendly(other_piece))
 			moves.push_back(tmp_loc);
 	}
 
-	if (ChessPieceLocation::CanCreateLocation(loc.x - 1, loc.y)) {
-		auto tmp_loc = ChessPieceLocation(loc.x - 1, loc.y);
+	if (auto opt = ChessPieceLocation::CreateLocationIfPossible(loc.x + 1, loc.y)) {
+		const ChessPieceLocation &tmp_loc = *opt;
 		const ChessPiece &other_piece = m_board.GetPiece(tmp_loc);
 
 		if (!piece.IsFriendly(other_piece))
 			moves.push_back(tmp_loc);
 	}
 
-	if (ChessPieceLocation::CanCreateLocation(loc.x + 1, loc.y + 1)) {
-		auto tmp_loc = ChessPieceLocation(loc.x + 1, loc.y + 1);
+	if (auto opt = ChessPieceLocation::CreateLocationIfPossible(loc.x - 1, loc.y)) {
+		const ChessPieceLocation &tmp_loc = *opt;
 		const ChessPiece &other_piece = m_board.GetPiece(tmp_loc);
 
 		if (!piece.IsFriendly(other_piece))
 			moves.push_back(tmp_loc);
 	}
 
-	if (ChessPieceLocation::CanCreateLocation(loc.x + 1, loc.y - 1)) {
-		auto tmp_loc = ChessPieceLocation(loc.x + 1, loc.y - 1);
+	if (auto opt = ChessPieceLocation::CreateLocationIfPossible(loc.x + 1, loc.y + 1)) {
+		const ChessPieceLocation &tmp_loc = *opt;
 		const ChessPiece &other_piece = m_board.GetPiece(tmp_loc);
 
 		if (!piece.IsFriendly(other_piece))
 			moves.push_back(tmp_loc);
 	}
 
-	if (ChessPieceLocation::CanCreateLocation(loc.x - 1, loc.y + 1)) {
-		auto tmp_loc = ChessPieceLocation(loc.x - 1, loc.y + 1);
+	if (auto opt = ChessPieceLocation::CreateLocationIfPossible(loc.x + 1, loc.y - 1)) {
+		const ChessPieceLocation &tmp_loc = *opt;
 		const ChessPiece &other_piece = m_board.GetPiece(tmp_loc);
 
 		if (!piece.IsFriendly(other_piece))
 			moves.push_back(tmp_loc);
 	}
 
-	if (ChessPieceLocation::CanCreateLocation(loc.x - 1, loc.y - 1)) {
-		auto tmp_loc = ChessPieceLocation(loc.x - 1, loc.y - 1);
+	if (auto opt = ChessPieceLocation::CreateLocationIfPossible(loc.x - 1, loc.y + 1)) {
+		const ChessPieceLocation &tmp_loc = *opt;
+		const ChessPiece &other_piece = m_board.GetPiece(tmp_loc);
+
+		if (!piece.IsFriendly(other_piece))
+			moves.push_back(tmp_loc);
+	}
+
+	if (auto opt = ChessPieceLocation::CreateLocationIfPossible(loc.x - 1, loc.y - 1)) {
+		const ChessPieceLocation &tmp_loc = *opt;
 		const ChessPiece &other_piece = m_board.GetPiece(tmp_loc);
 
 		if (!piece.IsFriendly(other_piece))
