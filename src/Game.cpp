@@ -184,32 +184,48 @@ void ChessGame::add_valid_rook_moves(std::vector<ChessPieceLocation> &moves, con
 	for (auto x = loc.x + 1; x < m_board.GetWidth(); x++) {
 		const ChessPieceLocation tmp_loc = ChessPieceLocation(x, loc.y);
 		const ChessPiece &other_piece = m_board.GetPiece(tmp_loc);
-		if (other_piece.IsValid() || piece.IsFriendly(other_piece))
+		if (piece.IsFriendly(other_piece))
 			break;
+		if (other_piece.IsValid()) {
+			moves.push_back(tmp_loc);
+			break;
+		}
 		moves.push_back(tmp_loc);
 	}
 
-	for (auto x = loc.x - 1; x >= 0; x--) {
+	for (int x = loc.x - 1; x >= 0; x--) {
 		const ChessPieceLocation tmp_loc = ChessPieceLocation(x, loc.y);
 		const ChessPiece &other_piece = m_board.GetPiece(tmp_loc);
-		if (other_piece.IsValid() || piece.IsFriendly(other_piece))
+		if (piece.IsFriendly(other_piece))
 			break;
+		if (other_piece.IsValid()) {
+			moves.push_back(tmp_loc);
+			break;
+		}
 		moves.push_back(tmp_loc);
 	}
 
 	for (auto y = loc.y + 1; y < m_board.GetHeight(); y++) {
 		const ChessPieceLocation tmp_loc = ChessPieceLocation(loc.x, y);
 		const ChessPiece &other_piece = m_board.GetPiece(tmp_loc);
-		if (other_piece.IsValid() || piece.IsFriendly(other_piece))
+		if (piece.IsFriendly(other_piece))
 			break;
+		if (other_piece.IsValid()) {
+			moves.push_back(tmp_loc);
+			break;
+		}
 		moves.push_back(tmp_loc);
 	}
 
-	for (auto y = loc.y - 1; y >= 0; y--) {
+	for (int y = loc.y - 1; y >= 0; y--) {
 		const ChessPieceLocation tmp_loc = ChessPieceLocation(loc.x, y);
 		const ChessPiece &other_piece = m_board.GetPiece(tmp_loc);
-		if (other_piece.IsValid() || piece.IsFriendly(other_piece))
+		if (piece.IsFriendly(other_piece))
 			break;
+		if (other_piece.IsValid()) {
+			moves.push_back(tmp_loc);
+			break;
+		}
 		moves.push_back(tmp_loc);
 	}
 }
@@ -287,32 +303,48 @@ void ChessGame::add_valid_bishop_moves(std::vector<ChessPieceLocation> &moves, c
 	for (auto x = loc.x + 1, y = loc.y + 1; x < m_board.GetWidth() && y < m_board.GetHeight(); x++, y++) {
 		const ChessPieceLocation tmp_loc = ChessPieceLocation(x, y);
 		const ChessPiece &other_piece = m_board.GetPiece(tmp_loc);
-		if (other_piece.IsValid() || piece.IsFriendly(other_piece))
+		if (piece.IsFriendly(other_piece))
 			break;
+		if (other_piece.IsValid()) {
+			moves.push_back(tmp_loc);
+			break;
+		}
 		moves.push_back(tmp_loc);
 	}
 
 	for (auto x = loc.x + 1, y = loc.y - 1; x < m_board.GetWidth() && y < m_board.GetHeight(); x++, y--) {
 		const ChessPieceLocation tmp_loc = ChessPieceLocation(x, y);
 		const ChessPiece &other_piece = m_board.GetPiece(tmp_loc);
-		if (other_piece.IsValid() || piece.IsFriendly(other_piece))
+		if (piece.IsFriendly(other_piece))
 			break;
+		if (other_piece.IsValid()) {
+			moves.push_back(tmp_loc);
+			break;
+		}
 		moves.push_back(tmp_loc);
 	}
 
 	for (auto x = loc.x - 1, y = loc.y + 1; x < m_board.GetWidth() && y < m_board.GetHeight(); x--, y++) {
 		const ChessPieceLocation tmp_loc = ChessPieceLocation(x, y);
 		const ChessPiece &other_piece = m_board.GetPiece(tmp_loc);
-		if (other_piece.IsValid() || piece.IsFriendly(other_piece))
+		if (piece.IsFriendly(other_piece))
 			break;
+		if (other_piece.IsValid()) {
+			moves.push_back(tmp_loc);
+			break;
+		}
 		moves.push_back(tmp_loc);
 	}
 
 	for (auto x = loc.x - 1, y = loc.y - 1; x < m_board.GetWidth() && y < m_board.GetHeight(); x--, y--) {
 		const ChessPieceLocation tmp_loc = ChessPieceLocation(x, y);
 		const ChessPiece &other_piece = m_board.GetPiece(tmp_loc);
-		if (other_piece.IsValid() || piece.IsFriendly(other_piece))
+		if (piece.IsFriendly(other_piece))
 			break;
+		if (other_piece.IsValid()) {
+			moves.push_back(tmp_loc);
+			break;
+		}
 		moves.push_back(tmp_loc);
 	}
 }
