@@ -349,7 +349,6 @@ void ChessGame::add_valid_bishop_moves(std::vector<ChessPieceLocation> &moves, c
 	}
 }
 
-// Probably correct
 void ChessGame::add_valid_queen_moves(std::vector<ChessPieceLocation> &moves, const ChessPiece &piece, const ChessPieceLocation &loc)
 {
 	add_valid_bishop_moves(moves, piece, loc);
@@ -357,7 +356,6 @@ void ChessGame::add_valid_queen_moves(std::vector<ChessPieceLocation> &moves, co
 	add_valid_king_moves(moves, piece, loc);
 }
 
-// Currently lets you overwrite your own pieces. TODO fix
 void ChessGame::add_valid_king_moves(std::vector<ChessPieceLocation> &moves, const ChessPiece &piece, const ChessPieceLocation &loc)
 {
 	if (ChessPieceLocation::CanCreateLocation(loc.x, loc.y + 1)) {
