@@ -441,7 +441,7 @@ std::vector<ChessPieceLocation> ChessGame::get_valid_moves(const ChessPiece &pie
 			break;
 		}
 		case PieceTypeBishop: {
-			 add_valid_bishop_moves(moves, piece, loc);
+			add_valid_bishop_moves(moves, piece, loc);
 			break;
 		}
 		case PieceTypeQueen: {
