@@ -46,7 +46,7 @@ private:
 	static constexpr std::size_t BOARD_WIDTH = 8;
 	static constexpr std::size_t BOARD_HEIGHT = 8;
 
-	ChessPiece board[BOARD_WIDTH][BOARD_HEIGHT] = {
+	ChessPiece m_board[BOARD_WIDTH][BOARD_HEIGHT] = {
 		{
 			ChessPiece(PlayerBlack, PieceTypeRook),
 			ChessPiece(PlayerBlack, PieceTypeKnight),
