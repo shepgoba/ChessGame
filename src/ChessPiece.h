@@ -7,7 +7,7 @@ enum Player : std::size_t {
 	PlayerBlack = 1,
 	PlayerNone = 2
 };
-
+ 
 enum PieceType : std::size_t {
 	PieceTypePawn = 0,
 	PieceTypeRook = 1,

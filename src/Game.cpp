@@ -146,32 +146,37 @@ static int __white_y_offset_if_necessary(const ChessPiece &piece, int offset)
 
 void ChessGame::add_valid_pawn_moves(std::vector<ChessPieceLocation> &moves, const ChessPiece &piece, const ChessPieceLocation &loc)
 {
-	if (ChessPieceLocation::CanCreateLocation(loc.x, loc.y + __white_y_offset_if_necessary(piece, 1))) {
-		const ChessPieceLocation tmp_loc = ChessPieceLocation(loc.x, loc.y + __white_y_offset_if_necessary(piece, 1));
+	if (auto opt = ChessPieceLocation::CreateLocationIfPossible(loc.x, loc.y + __white_y_offset_if_necessary(piece, 1))) {
+		const ChessPieceLocation tmp_loc = *opt;
 		const ChessPiece &other_piece = m_board.GetPiece(tmp_loc);
 
 		if (!other_piece.IsValid() && !piece.IsFriendly(other_piece))
-			moves.push_back(ChessPieceLocation(loc.x, loc.y + __white_y_offset_if_necessary(piece, 1)));
+			moves.push_back(tmp_loc);
 	}
 
 	
 	if (piece.GetMoveCount() == 0) {
 		// no need for validation
-		if (ChessPieceLocation::CanCreateLocation(loc.x, loc.y + __white_y_offset_if_necessary(piece, 2)))
-			moves.push_back(ChessPieceLocation(loc.x, loc.y + __white_y_offset_if_necessary(piece, 2)));
+		if (auto opt = ChessPieceLocation::CreateLocationIfPossible(loc.x, loc.y + __white_y_offset_if_necessary(piece, 2))) {
+			const ChessPieceLocation tmp_loc = *opt;
+			const ChessPiece &other_piece = m_board.GetPiece(tmp_loc);
+
+			if (!other_piece.IsValid() && !piece.IsFriendly(other_piece))
+				moves.push_back(tmp_loc);
+		}
 	}
 
 	// Kill Moves
-	if (ChessPieceLocation::CanCreateLocation(loc.x + 1, loc.y + __white_y_offset_if_necessary(piece, 1))) {
-		const ChessPieceLocation tmp_loc = ChessPieceLocation(loc.x + 1, loc.y + __white_y_offset_if_necessary(piece, 1));
+	if (auto opt = ChessPieceLocation::CreateLocationIfPossible(loc.x + 1, loc.y + __white_y_offset_if_necessary(piece, 1))) {
+		const ChessPieceLocation tmp_loc = *opt;
 		const ChessPiece &other_piece = m_board.GetPiece(tmp_loc);
 
 		if (other_piece.IsValid() && !piece.IsFriendly(other_piece))
 			moves.push_back(ChessPieceLocation(tmp_loc));
 	}
 
-	if (ChessPieceLocation::CanCreateLocation(loc.x - 1, loc.y + __white_y_offset_if_necessary(piece, 1))) {
-		const ChessPieceLocation tmp_loc = ChessPieceLocation(loc.x - 1, loc.y + __white_y_offset_if_necessary(piece, 1));
+	if (auto opt = ChessPieceLocation::CreateLocationIfPossible(loc.x - 1, loc.y + __white_y_offset_if_necessary(piece, 1))) {
+		const ChessPieceLocation tmp_loc = *opt;
 		const ChessPiece &other_piece = m_board.GetPiece(tmp_loc);
 		
 		if (other_piece.IsValid() && !piece.IsFriendly(other_piece))
