@@ -17,14 +17,6 @@ struct ChessPieceLocation {
 		assert(CanCreateLocation(x, y) && "Invalid location");
 	}
 
-	ChessPieceLocation operator+(const ChessPieceLocation &other) const {
-		return ChessPieceLocation(x + other.x, y + other.y);
-	}
-
-	ChessPieceLocation operator-(const ChessPieceLocation &other) const {
-		return ChessPieceLocation(x - other.x, y - other.y);
-	}
-
 	bool operator==(const ChessPieceLocation &other) const {
 		return (x == other.x) && (y == other.y);
 	}
