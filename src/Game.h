@@ -24,7 +24,6 @@ private:
 
 	constexpr static int tile_width = window_width / 8;
 	constexpr static int tile_height = window_height / 8;
-
 	bool m_running = false;
 	bool m_show_possible_moves = false;
 
@@ -38,6 +37,8 @@ private:
 
 	int selected_piece_x, selected_piece_y;
 	std::vector<ChessPieceLocation> m_possible_moves;
+
+	Player m_turn = PlayerWhite;
 
 	// Setup Functions
 	void setup_libraries();
@@ -58,7 +59,7 @@ private:
 	void add_valid_queen_moves(std::vector<ChessPieceLocation> &moves, const ChessPiece &piece, const ChessPieceLocation &loc);
 	void add_valid_king_moves(std::vector<ChessPieceLocation> &moves, const ChessPiece &piece, const ChessPieceLocation &loc);
 	
-	//Drawing functions
+	// Drawing functions
 	void draw_possible_moves();
 	void draw_board();
 	void draw_pieces();

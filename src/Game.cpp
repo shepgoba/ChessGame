@@ -428,7 +428,6 @@ void ChessGame::add_valid_king_moves(std::vector<ChessPieceLocation> &moves, con
 	}
 }
 
-
 std::vector<ChessPieceLocation> ChessGame::get_valid_moves(const ChessPiece &piece, const ChessPieceLocation &loc)
 {
 	std::vector<ChessPieceLocation> moves;
@@ -485,6 +484,11 @@ void ChessGame::handle_click(const SDL_MouseButtonEvent &event)
 				if (move == click_loc) {
 					const auto selected_piece_location = ChessPieceLocation(selected_piece_x, selected_piece_y);
 					m_board.MovePiece(selected_piece_location, move);
+
+					if (m_turn == PlayerWhite)
+						m_turn = PlayerBlack;
+					else
+						m_turn = PlayerWhite;
 				}
 			}
 		}
@@ -492,7 +496,7 @@ void ChessGame::handle_click(const SDL_MouseButtonEvent &event)
 		m_show_possible_moves = false;
 	} else {
 		const ChessPiece &piece = m_board.GetPiece(click_loc);
-		if (!piece.IsValid())
+		if (!piece.IsValid() || piece.GetOwner() != m_turn)
 			return;
 	
 		const std::vector<ChessPieceLocation> moves = get_valid_moves(piece, click_loc);
