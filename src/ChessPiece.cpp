@@ -22,7 +22,7 @@ bool ChessPiece::IsValid() const
 
 bool ChessPiece::IsFriendly(const ChessPiece &other) const
 {
-	return (owner == other.GetOwner());
+	return owner == other.GetOwner();
 }
 
 void ChessPiece::IncrementMoveCount()
