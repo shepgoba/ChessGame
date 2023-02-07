@@ -191,11 +191,10 @@ void ChessGame::add_valid_rook_moves(std::vector<ChessPieceLocation> &moves, con
 		const ChessPiece &other_piece = m_board.GetPiece(tmp_loc);
 		if (piece.IsFriendly(other_piece))
 			break;
+		moves.push_back(tmp_loc);
 		if (other_piece.IsValid()) {
-			moves.push_back(tmp_loc);
 			break;
 		}
-		moves.push_back(tmp_loc);
 	}
 
 	for (int x = loc.x - 1; x >= 0; x--) {
@@ -203,11 +202,10 @@ void ChessGame::add_valid_rook_moves(std::vector<ChessPieceLocation> &moves, con
 		const ChessPiece &other_piece = m_board.GetPiece(tmp_loc);
 		if (piece.IsFriendly(other_piece))
 			break;
+		moves.push_back(tmp_loc);
 		if (other_piece.IsValid()) {
-			moves.push_back(tmp_loc);
 			break;
 		}
-		moves.push_back(tmp_loc);
 	}
 
 	for (auto y = loc.y + 1; y < m_board.GetHeight(); y++) {
@@ -215,11 +213,10 @@ void ChessGame::add_valid_rook_moves(std::vector<ChessPieceLocation> &moves, con
 		const ChessPiece &other_piece = m_board.GetPiece(tmp_loc);
 		if (piece.IsFriendly(other_piece))
 			break;
+		moves.push_back(tmp_loc);
 		if (other_piece.IsValid()) {
-			moves.push_back(tmp_loc);
 			break;
 		}
-		moves.push_back(tmp_loc);
 	}
 
 	for (int y = loc.y - 1; y >= 0; y--) {
@@ -227,11 +224,10 @@ void ChessGame::add_valid_rook_moves(std::vector<ChessPieceLocation> &moves, con
 		const ChessPiece &other_piece = m_board.GetPiece(tmp_loc);
 		if (piece.IsFriendly(other_piece))
 			break;
+		moves.push_back(tmp_loc);
 		if (other_piece.IsValid()) {
-			moves.push_back(tmp_loc);
 			break;
 		}
-		moves.push_back(tmp_loc);
 	}
 }
 

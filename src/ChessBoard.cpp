@@ -2,7 +2,8 @@
 
 // Return true on success
 bool ChessBoard::MovePiece(ChessPieceLocation from, ChessPieceLocation to)
-{	ChessPiece &pieceTo = m_board[to.y][to.x];
+{	
+	ChessPiece &pieceTo = m_board[to.y][to.x];
 	const ChessPiece &pieceFrom = m_board[from.y][from.x];
 	
 	if (!pieceFrom.IsValid())

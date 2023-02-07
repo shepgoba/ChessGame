@@ -35,7 +35,9 @@ private:
 	std::vector<std::string> m_args;
 	
 
-	int selected_piece_x, selected_piece_y;
+	int selected_piece_x = -1;
+	int selected_piece_y = -1;
+	
 	std::vector<ChessPieceLocation> m_possible_moves;
 
 	Player m_turn = PlayerWhite;
