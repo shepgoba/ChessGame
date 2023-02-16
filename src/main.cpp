@@ -2,6 +2,11 @@
 
 int main(int argc, char *argv[]) {
 	ChessGame cg(argc, argv);
-	cg.run();
+	try {
+		cg.run();
+	} catch (const std::exception &e) {
+		std::cerr << e.what() << std::endl;
+		return 1;
+	}
 	return 0;
 }
