@@ -1,6 +1,7 @@
 #include "Game.h"
 
-static inline SDL_Rect SDLRectMake(unsigned x, unsigned y, unsigned w, unsigned h) {
+static inline SDL_Rect SDLRectMake(unsigned x, unsigned y, unsigned w, unsigned h)
+{
 	SDL_Rect r;
 	r.x = x;
 	r.y = y;
@@ -15,7 +16,8 @@ static std::string GetAssetPath(const char *in)
 	return std::string("assets/") + in;
 }
 
-ChessGame::ChessGame(int argc, char *argv[]) {
+ChessGame::ChessGame(int argc, char *argv[])
+{
 	for (int i = 0; i < argc; i++) {
 		auto str = std::string(argv[i]);
 		m_args.push_back(str);
@@ -582,7 +584,8 @@ void ChessGame::cleanup()
 	cleanup_libraries();
 }
 
-void ChessGame::run() {
+void ChessGame::run()
+{
 	setup();
 
 	m_running = true;

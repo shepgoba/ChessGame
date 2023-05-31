@@ -2,7 +2,6 @@
 #define CHESSBOARD_INCLUDE_H
 #include "ChessPiece.h"
 #include <cassert>
-#include <cstddef>
 #include <cstdio>
 #include <optional>
 
