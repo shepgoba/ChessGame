@@ -3,16 +3,16 @@
 // Return true on success
 bool ChessBoard::MovePiece(ChessPieceLocation from, ChessPieceLocation to)
 {	
-	const ChessPiece &pieceFrom = m_board[from.y][from.x];
+	ChessPiece pieceFrom = GetPiece(from);
 	
 	if (!pieceFrom.IsValid())
 		return false;
 
-	m_board[to.y][to.x] = pieceFrom;
 	m_board[from.y][from.x] = ChessPiece(PlayerNone, PieceTypeNone);
 
-	ChessPiece &pieceTo = m_board[to.y][to.x];
-	pieceTo.IncrementMoveCount();
+	// Move piece
+	m_board[to.y][to.x] = pieceFrom;
+	pieceFrom.IncrementMoveCount();
 
 	return true;
 }
