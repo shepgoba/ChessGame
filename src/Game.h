@@ -24,6 +24,7 @@ private:
 
 	constexpr static int tile_width = window_width / 8;
 	constexpr static int tile_height = window_height / 8;
+
 	bool m_running = false;
 	bool m_show_possible_moves = false;
 
@@ -34,7 +35,6 @@ private:
 	std::array<SDL_Texture *, 12> m_piece_textures;
 	std::vector<std::string> m_args;
 	
-
 	int selected_piece_x = -1;
 	int selected_piece_y = -1;
 	
