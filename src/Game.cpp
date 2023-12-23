@@ -482,7 +482,6 @@ void ChessGame::handle_click(const SDL_MouseButtonEvent &event)
 				if (move == click_loc) {
 					const auto selected_piece_location = ChessPieceLocation(selected_piece_x, selected_piece_y);
 					m_board.MovePiece(selected_piece_location, move);
-
 					if (m_turn == PlayerWhite)
 						m_turn = PlayerBlack;
 					else

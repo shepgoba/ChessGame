@@ -4,7 +4,7 @@
 bool ChessBoard::MovePiece(ChessPieceLocation from, ChessPieceLocation to)
 {	
 	ChessPiece pieceFrom = GetPiece(from);
-	
+
 	if (!pieceFrom.IsValid())
 		return false;
 
@@ -12,7 +12,9 @@ bool ChessBoard::MovePiece(ChessPieceLocation from, ChessPieceLocation to)
 
 	// Move piece
 	m_board[to.y][to.x] = pieceFrom;
-	pieceFrom.IncrementMoveCount();
+
+	// Increment move count internally
+	m_board[to.y][to.x].IncrementMoveCount();
 
 	return true;
 }
